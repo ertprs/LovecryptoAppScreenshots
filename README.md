@@ -1,19 +1,3 @@
-
-## Pre requisitos
-
-- Ter o expo instalado na maquina
- 
- npm install -g expo-cli
-
-## Como usar 
-- Clone o repositorio
-
-- Rode Yarn ou NPM install no diretorio raiz
-
-- Rode com expo start
-
-
-
-
-- Follow Build Standalone Guide [here](https://docs.expo.io/versions/v32.0.0/distribution/building-standalone-apps/)
-
+![Splash Screen](https://lh3.googleusercontent.com/8a4cjbaxHIiQV-lfpmNngeArP_5bQXaQE_4-6CB5-au1k2SEle8MgXfxYzkUsvlcjQVb6bEIB7kE)![Welcome Screen](https://lh3.googleusercontent.com/5iuE95cf1Uds2hE2_BHp8iU_XnSNQCksOROQeZRioSmcMsniqLwzV5FLOWO4AR_3lbXofLO96UUu)![Signup Screen](https://lh3.googleusercontent.com/hno3PYvEojBS_NA0wpXlrAmuibbNs5sN5msDKcTrvePJ4fiVf1vwU_rguIn_qNSYpkjXHdF0eYdx)![Login Screen](https://lh3.googleusercontent.com/Z36z0EyZ5BgXkgXHrLQZ5lbOw0lbo5krNC3oDen_5yfqzAB7Zi7C1kxg18EXmuHlfd5t-I0xED_Q)![Home Screen](https://lh3.googleusercontent.com/2GZXPLo4yi1zqOE-D0LM-T8wre-XA4rtE0a5d9Q1tOfhldnywBAxcDmYEOVQNIeN_-2dIDURd0Ca)![ ](https://lh3.googleusercontent.com/bWhdqwYQAYylMS2G-P0klgzVNegks_JComgqQCgC5vJsF8El_ISXibP5SOiqYmfunrpxYW1eUrR5 "Wallet Screen")
+![enter image description here](https://lh3.googleusercontent.com/M1aZxaa3q7n36WGxpXhUmcwx9Q73a5c9nfW3kMlsYxtHHbPUN1icfYEmpD2mHMdaSRZiD1sRFXXf)
+![enter image description here](https://lh3.googleusercontent.com/gXQ_fC_-FajSh4Gx2SWa02rJ0L2UqNOKEUY7dEJJNaT1-H071okjuA49m-pBQW2twImUMAOekuol)![enter image description here](https://lh3.googleusercontent.com/s-UpLZKl5toT0Pw2YpN9qL7Ha7aqsgkQayJOPNkCL3YJhurgGAUgCHbVNWC9GZTysf1HbBbImJ5v)![enter image description here](https://lh3.googleusercontent.com/hYwTOU1BBj2NKDXeqOlB5Z5ZZCZqDF8jpB2TwFWXTdB9Vfru_g54cJwHFktg-sOV7Vb2ND7bIK61)![enter image description here](https://lh3.googleusercontent.com/xHSs8mxa7UiLGDPgiQXc2jpYNoQiJgOwjp7FTM25k-2_co--W7EFUoq3n9ad53_55DY_3GhtxE9I)![enter image description here](https://lh3.googleusercontent.com/89O0DMvtjujbnGrXIAiSLMIzPzSBorVgRJ4_eWJOSIj7RF1O10qtPxvvLdy4q2D8_4ilWHU-fDxQ)![enter image description here](https://lh3.googleusercontent.com/Ly_oDB7j9tvijPARET9YTGh-JNASQcsDTpfmWwoIzu8ud4t7dCketVCry6flu22-azjOYX_v6Zsn)![enter image description here](https://lh3.googleusercontent.com/ajyCTIdxQ9kjV035x_vExfRK_-2e0ULr1fCtgd5mcsWTC6fv1_I4xYMG94BinkBv97Uac0EsRwwk)![enter image description here](https://lh3.googleusercontent.com/Zj3enkkCpCznjqXiIXrHz1DR0wzVmdHEwdIsRPaZH7NO3NyQWIW8517zjElxXeNp-s3jjJAPrEbN)![enter image description here](https://lh3.googleusercontent.com/xLQNt3FiZt6NeCcZQoM2FyUDcnUvJEyQlOOzRiG0mTPEVAjUZJAXK89QNrMCIduVyVNMcYqbTZCn)
