@@ -1,156 +1,93 @@
 import React, { Component } from "react";
 import { StyleSheet, TextInput, Image, View, ImageBackground } from 'react-native';
-import { Layout, Text, Button, Input} from 'react-native-ui-kitten'
+import { Layout, Text, Button, Input} from '@ui-kitten/components'
 import { Survey } from '../../components/Survey';
 import * as firebase from "firebase";
-import api from '../../config/api'
-const surveyData = 
-{
-  id: 202003245,
-  name: 'Perfil Familiar',
-  reward: 5,
-  numberOfTasks: 5,
-  urlImage: '../../../assets/banner/2.jpeg',
-  questions : [
-    {
-      questionType: 'Info',
-      questionText: 'Gostariamos de saber mas sobre seu perfil familiar'
-    },
-    {
-      questionType: 'SelectionGroup',
-      questionText:
-          'Você tem algum parente idoso que mora com você(65 anos ou mais)',
-      questionId: 'singleDefault',
-      questionSettings: {
-          defaultSelection: 0
-      },
-      options: [
-          {
-              optionText: 'Não',
-              value: 'default'
-          },
-          {
-              optionText: 'Sim',
-              value: 'alternative'
-          },
-      ]
-  },
-  {
-    questionType: 'TextInput',
-    questionText: 'Se sim, insira o cpf dela?',
-    questionId: 'CPF',
-    placeholderText: 'CPF',
-  },
-  {
-    questionType: 'TextInput',
-    questionText: 'Insira seu CEP',
-    questionId: 'CEP',
-    placeholderText: 'CEP',
-  },
-  {
-    questionType: 'Info',
-    questionText: 'Obrigado por suas respostas'
-},
-  
-]
-}
+import api from '../../api'
 
 
 const makeJsonInfo = (questions, description) =>{
 
-  data = {}
-  
+  completeData = []
+
+  completeData.push({ 
+    questionType: 'Info', 
+    questionText: description
+  })
+
+  // console.log(questions)
   for (j = 0; j < questions.length; j++) {
     question = {}  
     if(questions[j].type.localeCompare('SHORT_TEXT') == 0){
       question = {
         questionType: 'TextInput', 
-        questionText: questions[j].content
+        questionText: questions[j].content,
+        question_id: questions[j].id,
       }
-      data = Object.assign(question, data)
-     }
+      completeData.push(question)
+    }
 
     if(questions[j].type.localeCompare('INTEGER') == 0){
       question = {
         questionType: 'NumericInput', 
-        questionText: questions[j].content
+        questionText: questions[j].content,
+        question_id: questions[j].id,
       }
-      data = Object.assign(question, data)
+      completeData.push(question)
     }
-
     if(questions[j].type.localeCompare('TEXT') == 0){
       question = {
         questionType: 'TextInput', 
-        questionText: questions[j].content
+        questionText: questions[j].content,
+        question_id: questions[j].id,
       }
-      data = Object.assign(question, data)
+      completeData.push(question)
     }
-  
     if(questions[j].type.localeCompare('RADIO') == 0){
-      opt = []
+      options = []
       optText = []
       optText = questions[j].choices.split('@#')
       for (i = 0; i < optText.length; i++) {
-        opt.push({optionText: optText[i], value:i})
+        options.push({optionText: optText[i]})
+        
       } 
-
       question = {
         questionType: 'SelectionGroup', 
         questionText: questions[j].content,
-        questionId: questions[j].id,
+        question_id: questions[j].id,
         questionSettings: {
             defaultSelection: 0
         },
-        options: [
-          opt
-        ]
+        options
       }
-      data = Object.assign(question, data)
+      completeData.push(question)
     }
-  
     if(questions[j].type.localeCompare('SELECT') == 0){
-      opt = []
+      options = []
       optText = []
       optText = questions[j].choices.split('@#')
       for (i = 0; i < optText.length; i++) {
-        opt.push({optionText: optText[i], value:i})
+        options.push({optionText: optText[i]})
       } 
       question = {
         questionType: 'MultipleSelectionGroup', 
         questionText: questions[j].content,
-        questionId: questions[j].id,
+        question_id: questions[j].id,
         questionSettings: {
-          maxMultiSelect: opt.length,
+          maxMultiSelect: options.length,
           minMultiSelect: 1,
         },
-        options: [
-          opt
-        ]
+        options
       }
-      data = Object.assign(question, data)
+      completeData.push(question)
     }
-    // console.log(question)
   } 
   
-
+  // completeData.push({ 
+  //   questionType: 'Info', 
+  //   questionText: 'Obrigado por suas respostas!!!'
+  // })
   
-  
-  
-
-
-
-  // console.log(surveyData.questions)
-  completeData = [
-    { 
-      questionType: 'Info', 
-      questionText: description
-    },
-    data
-    ,{ 
-      questionType: 'Info', 
-      questionText: 'Obrigado por suas respostas!!!'
-    }
-  ]
   return completeData;
 }
 
@@ -161,7 +98,6 @@ const getToken = async () => {
   })
   return await token
 }
-
 // const getTasks = async (id) => {
 //   token = await getToken();
 //   config = {
@@ -199,7 +135,7 @@ export class TaskAnsweringScreen extends Component {
     this.state = { 
       answersSoFar: '',
       id:  this.props.navigation.state.params.id,
-      name: 'Pesquisa',
+      name: '',
       points: 0 ,
       numberOfTasks: 0,
       urlImage: '',
@@ -212,17 +148,19 @@ export class TaskAnsweringScreen extends Component {
   async componentDidMount(){
       // console.log('carregou')
       
-      data = await getTasks(this.state.id)
-        // console.log(data.questions)  
-      console.log(makeJsonInfo(data.questions, data.description));
+      await getTasks(this.state.id).then(data => {
+        // console.log(data)
         this.setState({ 
-          loaded: false,
           name: data.name,
           points: data.points ,
           numberOfTasks: data.questions.length,
           urlImage: data.campaign.cover,
-          data: makeJsonInfo(data.questions)
+          data: makeJsonInfo(data.questions, data.description)
         })
+      })
+        // console.log(data.questions)  
+      //  .log(makeJsonInfo(data.questions, data.description));
+        
    
   }
 
@@ -231,8 +169,11 @@ export class TaskAnsweringScreen extends Component {
   onSurveyFinished(answers) {
     const infoQuestionsRemoved = [...answers];
     const answersAsObj = {};
-    for (const elem of infoQuestionsRemoved) { answersAsObj[elem.questionId] = elem.value; }
-    this.props.navigation.navigate('Home', { surveyAnswers: answersAsObj });
+    
+    for (const elem of infoQuestionsRemoved) { answersAsObj[elem.question_id] = elem.value; }
+    // console.log(answers)
+    // console.log(this.props)
+    this.props.navigation.navigate('CompletedTask', { id: this.state.id, answers: answers, points: this.state.points, urlImage: this.state.urlImage });
   }
 
   onAnswerSubmitted(answer) {
@@ -332,29 +273,38 @@ export class TaskAnsweringScreen extends Component {
 
   render() {
     return (
-      <ImageBackground blurRadius={3} source={require('../../../assets/banner/2.jpeg')} style={styles.background}>
+      <ImageBackground blurRadius={3} source={{ uri: this.state.urlImage }} style={styles.background}>
         <Layout level = '2'  style = {styles.overlay}>
+          {/* <Text appearance='alternative'>{ this.state.name }</Text>
+          <Text appearance='alternative'>{ this.state.id }</Text>
+          <Text appearance='alternative'>{ this.state.numberOfTasks }</Text>
+          <Text appearance='alternative'>{ this.state.points }</Text>
+          <Text appearance='alternative'>{ this.state.urlImage }</Text>
+          <Text appearance='alternative'>{ JSON.stringify(this.state.data) }</Text>
+          <Text appearance='alternative'>{ this.state.loaded }</Text>
+           */}
+  
           { this.state && this.state.data  &&
           
           <Survey
-             ref={(s) => { this.surveyRef = s; }}
-             titleOfTask = {this.state.name}
-             points = { this.state.points }
-             questionsNo = { this.state.numberOfTasks }
-             survey={this.state.data}
-             renderSelector={this.renderButton.bind(this)}
-             containerStyle={styles.surveyContainer}
-             selectionGroupContainerStyle={styles.selectionGroupContainer}
-             navButtonContainerStyle={styles.ButtonContainer}
-             renderPrevious={this.renderPreviousButton.bind(this)}
-             renderNext={this.renderNextButton.bind(this)}
-             renderFinished={this.renderFinishedButton.bind(this)}
-             renderQuestionText={this.renderQuestionText}
-             onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
-             onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
-             renderTextInput={this.renderTextBox}
-             renderNumericInput={this.renderNumericInput}
-             renderInfo={this.renderInfoText}
+            ref={(s) => { this.surveyRef = s; }}
+            titleOfTask = { this.state.name}
+            points = { this.state.points }
+            questionsNo = { this.state.numberOfTasks }
+            survey={this.state.data}
+            renderSelector={this.renderButton.bind(this)}
+            containerStyle={styles.surveyContainer}
+            selectionGroupContainerStyle={styles.selectionGroupContainer}
+            navButtonContainerStyle={styles.ButtonContainer}
+            renderPrevious={this.renderPreviousButton.bind(this)}
+            renderNext={this.renderNextButton.bind(this)}
+            renderFinished={this.renderFinishedButton.bind(this)}
+            renderQuestionText={this.renderQuestionText}
+            onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
+            onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
+            renderTextInput={this.renderTextBox}
+            renderNumericInput={this.renderNumericInput}
+            renderInfo={this.renderInfoText}
           />
           }
          

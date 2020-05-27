@@ -13,10 +13,10 @@ export class Survey extends Component {
             PropTypes.shape({
                 questionType: PropTypes.string.isRequired,
                 questionText: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-                questionId: PropTypes.string,
+                question_id: PropTypes.string,
                 options: PropTypes.arrayOf(PropTypes.shape({
                     optionText: PropTypes.string.isRequired,
-                    value: PropTypes.any.isRequired,
+                    content: PropTypes.any.isRequired,
                 }))
             }).isRequired
         ).isRequired,
@@ -69,12 +69,13 @@ export class Survey extends Component {
             minMultiSelect = maxMultiSelect;
         }
 
-        if (answers[currentQuestionIndex] && answers[currentQuestionIndex].value.length >= minMultiSelect) {
+        if (answers[currentQuestionIndex] && answers[currentQuestionIndex].content.length >= minMultiSelect) {
             return true; 
         } else { return false; }
     }
 
     updateAnswer(answerForCurrentQuestion) {
+        // console.log(answerForCurrentQuestion)
         const { answers } = this.state;
         answers[this.state.currentQuestionIndex] = answerForCurrentQuestion;
         this.setState({ answers });
@@ -129,7 +130,7 @@ export class Survey extends Component {
         switch (survey[currentQuestionIndex].questionType) {
             case 'MultipleSelectionGroup': enabled = this.validateMultipleSelectionSurveyAnswers(); break;
             case 'Info': enabled = true; break;
-            default: enabled = Boolean(answers[currentQuestionIndex]) && (answers[currentQuestionIndex].value || answers[currentQuestionIndex].value === 0); break;
+            default: enabled = Boolean(answers[currentQuestionIndex]) && (answers[currentQuestionIndex].content || answers[currentQuestionIndex].content === 0); break;
         }
 
         if (currentQuestionIndex === this.props.survey.length - 1) {
@@ -219,9 +220,11 @@ export class Survey extends Component {
                 
                 if (typeof options.defaultSelection === 'number') { 
                     // Set timeout is used here to avoid updateAnswer's call to setState.
+                    //console.log(survey[currentQuestionIndex].options[options.defaultSelection].optionText)
                     setTimeout(() => this.updateAnswer({
-                        questionId: survey[currentQuestionIndex].questionId,
-                        value: survey[currentQuestionIndex].options[options.defaultSelection]
+                        question_id: survey[currentQuestionIndex].question_id,
+                        content: survey[currentQuestionIndex].options[options.defaultSelection]
+                        // content: survey[currentQuestionIndex].options[options.defaultSelection]
                         }), 0);
                 }
             }
@@ -239,15 +242,15 @@ export class Survey extends Component {
                     containerStyle={selectionGroupContainerStyle}
                     onItemSelected={(item) => { 
                         this.updateAnswer({
-                            questionId: survey[currentQuestionIndex].questionId,
-                            value: item
+                            question_id: survey[currentQuestionIndex].question_id,
+                            content: item.optionText
                             });
                         (this.props.autoAdvance || autoAdvanceThisQuestion) && this.autoAdvance();
                     }}
                     onItemDeselected={() => {
                         this.updateAnswer({
-                            questionId: survey[currentQuestionIndex].questionId,
-                            value: null
+                            question_id: survey[currentQuestionIndex].question_id,
+                            content: null
                         });
                     }}
                 />
@@ -283,8 +286,8 @@ export class Survey extends Component {
                 if (Array.isArray(options.defaultSelection)) {
                     // Set timeout is used here to avoid updateAnswer's call to setState.
                     setTimeout(() => this.updateAnswer({
-                        questionId: survey[currentQuestionIndex].questionId,
-                        value: survey[currentQuestionIndex].options.filter((element, index) => options.defaultSelection.includes(index)) 
+                        question_id: survey[currentQuestionIndex].question_id,
+                        content: survey[currentQuestionIndex].options.filter((element, index) => options.defaultSelection.includes(index)) 
                     }), 0);
                 }
             }
@@ -302,16 +305,27 @@ export class Survey extends Component {
                     renderContent={renderSelector}
                     containerStyle={selectionGroupContainerStyle}
                     onItemSelected={(item, allSelectedItems) => {
+                        let compiledOptions = '';
+                        for (var i = 0; i < allSelectedItems.length; i++) {
+                            compiledOptions.length > 0 ? compiledOptions += '@#' + allSelectedItems[i].optionText : compiledOptions += allSelectedItems[i].optionText 
+                         }
+                        //console.log(compiledOptions)
                         this.updateAnswer({
-                            questionId: survey[currentQuestionIndex].questionId,
-                            value: allSelectedItems
+                            question_id: survey[currentQuestionIndex].question_id,
+                            content: compiledOptions
+                            // content: allSelectedItems
                         });
                         (autoAdvanceThisQuestion || this.props.autoAdvance) && this.autoAdvance();
                     }}
                     onItemDeselected={(item, allSelectedItems) => {
+                        let compiledOptions = '';
+                        for (var i = 0; i < allSelectedItems.length; i++) {
+                            compiledOptions.length > 0 ? compiledOptions += '@#' + allSelectedItems[i].optionText : compiledOptions += allSelectedItems[i].optionText 
+                         }
+                        //console.log(compiledOptions)
                         this.updateAnswer({
-                            questionId: survey[currentQuestionIndex].questionId,
-                            value: allSelectedItems
+                            question_id: survey[currentQuestionIndex].question_id,
+                            content: compiledOptions
                         });
                     }}
                 />
@@ -324,12 +338,12 @@ export class Survey extends Component {
         const { survey, renderNumericInput, containerStyle } = this.props;
         const currentQuestionIndex = this.state.currentQuestionIndex;
         const answers = this.state.answers;
-        const { questionText, questionId, placeholderText = null, defaultValue = '' } = survey[currentQuestionIndex];
+        const { questionText, question_id, placeholderText = null, defaultValue = '' } = survey[currentQuestionIndex];
 
         if (answers[currentQuestionIndex] === undefined && (defaultValue || defaultValue === 0) && Number.isInteger(parseInt(`${defaultValue}`, 10))) {
             setTimeout(() => this.updateAnswer({
-                questionId: survey[currentQuestionIndex].questionId,
-                value: defaultValue
+                question_id: survey[currentQuestionIndex].question_id,
+                content: defaultValue
                 }), 0);
         }
 
@@ -338,21 +352,21 @@ export class Survey extends Component {
                 {this.props.renderQuestionText ?
                     this.props.renderQuestionText(questionText) : null}
                 {renderNumericInput(
-                    (value) => {
-                        const valInt = parseInt(value, 10);
+                    (content) => {
+                        const valInt = parseInt(content, 10);
                         if (Number.isInteger(valInt)) {
                             this.updateAnswer({
-                                questionId,
-                                value: valInt
+                                question_id,
+                                content: valInt
                             });
-                        } else if (value === '') {
+                        } else if (content === '') {
                             this.updateAnswer({
-                                questionId,
-                                value: ''
+                                question_id,
+                                content: ''
                             });
                         }
                     },
-                    answers[currentQuestionIndex] === undefined ? '' : answers[currentQuestionIndex].value,
+                    answers[currentQuestionIndex] === undefined ? '' : answers[currentQuestionIndex].content,
                     placeholderText,
                     this.props.autoAdvance ? this.autoAdvance.bind(this) : null
                 )}
@@ -365,23 +379,23 @@ export class Survey extends Component {
         const { survey, renderTextInput, containerStyle } = this.props;
         const currentQuestionIndex = this.state.currentQuestionIndex;
         const answers = this.state.answers;
-        const { questionText, questionId, placeholderText = null, defaultValue } = survey[currentQuestionIndex];
+        const { questionText, question_id, placeholderText = null, defaultValue } = survey[currentQuestionIndex];
         if (answers[currentQuestionIndex] === undefined && defaultValue) {
             setTimeout(() => this.updateAnswer({
-                questionId: survey[currentQuestionIndex].questionId,
-                value: defaultValue
+                question_id: survey[currentQuestionIndex].question_id,
+                content: defaultValue
                 }), 0);
         }
 
         return (<View style={containerStyle}>
             {this.props.renderQuestionText ?
                 this.props.renderQuestionText(questionText) : null}
-            {renderTextInput((value) =>
+            {renderTextInput((content) =>
                 this.updateAnswer({
-                    questionId,
-                    value
+                    question_id,
+                    content
                 }),
-                answers[currentQuestionIndex] === undefined ? undefined : answers[currentQuestionIndex].value,
+                answers[currentQuestionIndex] === undefined ? undefined : answers[currentQuestionIndex].content,
                 placeholderText,
                 this.props.autoAdvance ? this.autoAdvance.bind(this) : null
             )}
@@ -392,10 +406,10 @@ export class Survey extends Component {
     
     renderInfo( ) {
         const currentQuestionIndex = this.state.currentQuestionIndex;
-        const { survey, renderInfo, containerStyle } = this.props;
+        const { survey, renderInfo, containerStyle, titleOfTask, points, questionsNo } = this.props;
         const { questionText } = survey[currentQuestionIndex];
         return (<View style={containerStyle}>
-            {renderInfo(questionText, this.state.titleOfTask, this.state.points, this.state.questionsNo)}
+            {renderInfo(questionText, titleOfTask, points, questionsNo)}
             {this.renderNavButtons()}
         </View>
         );

@@ -1,11 +1,15 @@
-import React, { Fragment }  from "react";
-import * as firebase from "firebase";
-import {  StyleSheet, AsyncStorage, SafeAreaView} from "react-native";
-import { Formik } from "formik";
-import { Button, Input, Layout, Text, CheckBox} from 'react-native-ui-kitten';
 import * as Yup from 'yup';
-import ErrorMessage from '../../ErrorMenssage';
-import api from '../../../config/api'
+import { Formik } from "formik";
+import * as firebase from "firebase";
+import api from '../../../api';
+import React, { Fragment }  from "react";
+import ErrorMessage from '../../ErrorMessage';
+import { View,  StyleSheet, SafeAreaView} from "react-native";
+import { Button, Input, Layout, Spinner, Text, CheckBox} from '@ui-kitten/components';
+ 
+
+import  { registerApi }   from '../../../api/signup'
+import { loginApi }   from '../../../api/login'
 
 //Regras de validação
 const validationSchema = Yup.object().shape({
@@ -26,72 +30,89 @@ const validationSchema = Yup.object().shape({
     .required('A confirmação é obrigatória')
 })
 
-const saveUser = async (user) => {
-  try {
-    await AsyncStorage.setItem('user', JSON.stringify(user));
-  } catch (error) {
-      console.log(error.message);
-  }
-}
+const LoadingIndicator = (props) => (
+  <View style={[props.style, styles.indicator]}>
+    <Spinner size='small'/>
+  </View>
+);
 
-const getUser = async () => {
-  try {
-    usuario = await AsyncStorage.getItem('user') || 'none';
-  } catch (error) {
-    console.log(error.message);
-  } 
-  return usuario
-}
+// const getToken = async () => {
+//   token = await firebase.auth().currentUser.getIdToken().then(res => {
+//     return res
+//   })
+//   return await token
+// }
 
-//Recupera o token da memória
-const getToken = async () => {
-  token = await firebase.auth().currentUser.getIdToken().then(res => {
-       return res
-  })
-  return await token
-}
+// const loginApi = async () => {
+//   console.log('4  -------------------')
+//   token = await getToken()
+//   config = {
+//     headers: { Authorization: `Bearer ${token}` }
+//   }
+//   try{
+//       await api.get('/auth', config).then( response => { 
+//         let userData = response.data.user_data;
+//         // console.log(userData.address)
+//         saveData('@userData', userData)
+//     });
+//   }catch ( error ) {
+//     console.log(error.message)
+//   }
+// }
 
-const registerApi = async (email, name, uid) => {
-  token = await getToken();
-  body = {
-      email: email,
-      name: name,
-      firebase_uid: uid
-  }
-  config = {
-    headers: { Authorization: `Bearer ${token}` }
-  }
+// const registerApi = async (email, name, uid) => {
+//   // console.log('3 ' + email + ' ' + name + ' ' + uid)
+//   token = await getToken()
+//   body = {
+//       email: email,
+//       name: name,
+//       firebase_uid: uid
+//   }
+//   config = {
+//     headers: { Authorization: `Bearer ${token}` }
+//   }
+//   data = {
+//     email: email,
+//     name: name,
+//     firebase_uid: uid
+//   }
 
-  try{
-      await api.post('/register',{
-        email: email,
-        name: name,
-        firebase_uid: uid
-      } , config).then( response => {
-    });
-  }catch ( error ) {
-    console.log(error.message)
-  }
-}
+//   // console.log('Header ' + config)
+//   // console.log('Data ' + data)
+  
+//   try{
+//       await api.post('/register', data, config)
+//   }catch ( error ) {
+//     console.log(error.message)
+//   }
+// }
 
 //Componente para login/signup com email
 export const Signup = props => {
   const [checked, setChecked] = React.useState(false);
-
+  const [haveError, setHaveError] = React.useState(false);
+  
   const onCheckedChange = (isChecked) => {
     setChecked(isChecked);
   };
-
   const signup = async (email, name, password) => {
+    
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(res => {
-        registerApi(email, name, res.uid)
+      
+        registerApi(email, name, res.user.uid).then(response => {
+          loginApi()
+        })
+ 
         return res
       })
       .catch(error => {
         console.log(error);
+        if(error.message == 'The email address is already in use by another account.'){
+          setHaveError(true)
+        }
       });
   };
   return (
@@ -104,8 +125,8 @@ export const Signup = props => {
           confirmPassword: ''
         }}
         onSubmit={values => {
-          //this.handleSubmit(values)
           const { name, email, password } = values;
+          
           signup(email, name, password) 
         }}
         validationSchema={validationSchema}>
@@ -163,20 +184,23 @@ export const Signup = props => {
             />
             <Layout style = {styles.section} >
               <CheckBox
-                style = {styles.checkBox}
-                text={'Concordo com os termos e condições'}
-                textStyle={{color:'white', fontSize: 14}}
+                // style = {styles.checkBox}
                 checked={checked}
                 status='success'
                 onChange={onCheckedChange}
-              />
+              >
+                
+              </CheckBox>
+              <Text category='c1' status='control'>Concordo com os termos e condições</Text>
             </Layout>
             <Layout style = {styles.buttonRow} >
-                <Button 
-                  onPress={handleSubmit} 
-                  status='success'
-                  disabled={ isSubmitting || !isValid || !checked}
-                  >Cadastro</Button>
+            <ErrorMessage status = {'auth'}  errorValue={haveError && 'Esta credencial já pertence à alguma conta cadastrada'} />
+              <Button 
+                onPress={handleSubmit} 
+                status='success'
+                disabled={ isSubmitting || !isValid || !checked}
+                // accessoryLeft={LoadingIndicator}
+                >Cadastro</Button>
             </Layout>
           </Fragment>
         )}
@@ -187,12 +211,15 @@ export const Signup = props => {
 
 const styles = StyleSheet.create({  
   section: {
-    paddingTop: 16,
+    // paddingTop: 8,
     width: '100%',
     backgroundColor: 'transparent',
     flexDirection: 'column',
     flexWrap: 'wrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
   },
   input:{
     paddingTop: 8,
@@ -201,7 +228,10 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     backgroundColor: 'transparent',
   },
-  checkBox:{
-    paddingTop: 8,
+  // checkBox:{
+  //   paddingTop: 8,
+  // },
+  container:{
+    width: '100%'
   }
 });

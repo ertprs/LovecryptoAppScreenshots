@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Image} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Layout, Text, Input, Button} from 'react-native-ui-kitten'
+import { Layout, Text, Input, Button} from '@ui-kitten/components'
 import { withNavigation, SafeAreaView } from "react-navigation";
 
 const useInputChanges = (initialValue = '') => {
@@ -57,33 +57,32 @@ const styles = StyleSheet.create({
       
 const infoInputChanges = useInputChanges();
 
-export class PaymentAccountsScreen extends Component {
-  render() {
-    return (
-    
-    <Layout style = {styles.container}>
-      <ScrollView>
-        <Image style = {styles.image} source={{uri: 'https://placeimg.com/200/200/tech'}}/>
-        <Text style = {styles.text}>Please insert your Coinbase account</Text>
+export const PaymentAccountsScreen = (props) => {
+  return (
+  
+  <Layout style = {styles.container}>
+    <ScrollView>
+      <Image style = {styles.image} source={{uri: 'https://placeimg.com/200/200/tech'}}/>
+      <Text style = {styles.text}>Please insert your Coinbase account</Text>
 
-        <Input
-          style={styles.input}
-          status='info'
-          placeholder='Coinbase Account'
-        
-        />
-        <Input
-          style={styles.input}
-          status='info'
-          placeholder='Amount'
-        
-        />
-        <Button style={styles.button}>Confirm</Button>
-      </ScrollView>
-    </Layout>
-    );
-  }
+      <Input
+        style={styles.input}
+        status='info'
+        placeholder='Coinbase Account'
+      
+      />
+      <Input
+        style={styles.input}
+        status='info'
+        placeholder='Amount'
+      
+      />
+      <Button style={styles.button}>Confirm</Button>
+    </ScrollView>
+  </Layout>
+  );
 }
+
 
 
 

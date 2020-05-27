@@ -1,11 +1,12 @@
-import React, { Fragment }  from "react";
-import * as firebase from "firebase";
-import {  StyleSheet, AsyncStorage, SafeAreaView} from "react-native";
-import { Formik } from "formik";
-import { Button, Input, Layout, Text, CheckBox} from 'react-native-ui-kitten';
 import * as Yup from 'yup';
-import ErrorMessage from '../../ErrorMenssage';
-import api from '../../../config/api'
+import { Formik } from "formik";
+import * as firebase from "firebase";
+import React, { Fragment }  from "react";
+import ErrorMessage from '../../ErrorMessage';
+// import  { loginApi }  from '../../../api/login';
+import {  StyleSheet, SafeAreaView} from "react-native";
+import { Button, Input, Layout} from '@ui-kitten/components';
+
 
 //Regras de validação
 const validationSchema = Yup.object().shape({
@@ -18,62 +19,48 @@ const validationSchema = Yup.object().shape({
     .required('Este campo é obrigatório')
     .min(6, 'A senha deve ter pelo 6 caracteres '),
 })
+ 
 
-const getToken = async () => {
-  token = await firebase.auth().currentUser.getIdToken().then(res => {
-    return res
-  })
-  return await token
-}
-
-const saveUser = async (user) => {
-  try {
-    await AsyncStorage.setItem('user', user);
-    
-  } catch (error) {
-      console.log(error.message);
-  }
-}
-
-const getUser = async () => {
-  // try {
-  //   usuario = await AsyncStorage.getItem('user') || 'none';
-  // } catch (error) {
-  //   console.log(error.message);
-  // } 
-  // console.log(usuario + 'recuperado da memoria')
-  // return usuario
-}
-
-const loginApi = async () => {
-  token = await getToken();
+ const loginApi = async () => {
+  token =  await firebase.auth().currentUser.getIdToken()
   config = {
     headers: { Authorization: `Bearer ${token}` }
   }
+ 
   try{
+   
       await api.get('/auth', config).then( response => { 
-        console.log(JSON.stringify(response.data.user_data)) 
-        saveUser(JSON.stringify(response.data.user_data))
+    
+        let userData = response.data.user_data;
+        saveData('@userData', userData)
+        initialConfig()
     });
   }catch ( error ) {
     console.log(error.message)
   }
 }
+
+
 //Componente para login/signup com email
 export const Login = (props) => {
+
+  const [haveError, setHaveError] = React.useState(false);
 
   const login = async (email, password) => {
     response = firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(res => {
-        //Salva o usuario no Async Storage
-        //console.log(' Acess  ' + JSON.stringify(res))
-        loginApi()
-        return res
+        console.log('1  ')
+        loginApi().then(() =>{
+          return res
+        })
       })
       .catch(error => {
-        console.log(error);
+        console.log(error.message);
+        if(error.message == 'There is no user record corresponding to this identifier. The user may have been deleted.' || error.message == 'The password is invalid or the user does not have a password.'){
+          setHaveError(true)
+        }
       });
   };
 
@@ -85,7 +72,6 @@ export const Login = (props) => {
           password: '',
         }}
         onSubmit={values => {
-          //this.handleSubmit(values)
           const { email, password } = values;
           login(email, password);
         }}
@@ -118,21 +104,20 @@ export const Login = (props) => {
               secureTextEntry
               onBlur={handleBlur('password')}
             />
-            
             <ErrorMessage errorValue={touched.password && errors.password} />
-
             <Layout style = {styles.buttonRow} >
+              <ErrorMessage status = {'auth'}  errorValue={haveError && 'Você não tem conta ou a credencial está errada'} />
               <Button 
                 onPress={handleSubmit} 
                 status='success'
                 disabled={ isSubmitting || !isValid }
               >Login</Button>
-          </Layout>
+            </Layout>
         </Fragment>
         )}
       </Formik>
       <Layout style = {styles.section}>
-        <Button appearance='ghost' onPress = {() => console.log('Esqueceu a senha')} status='control'>Esqueceu sua senha?</Button>
+        <Button appearance='ghost' onPress = {() =>  props.navigation.navigate('ForgotPassword')} status='control'>Esqueceu sua senha?</Button>
       </Layout>
     </SafeAreaView>
   );
@@ -153,8 +138,12 @@ const styles = StyleSheet.create({
   buttonRow:{
     paddingTop: 32,
     backgroundColor: 'transparent',
+    width: '100%',
   },
   checkBox:{
     paddingTop: 8,
+  },
+  container:{
+    width: '100%'
   }
 });

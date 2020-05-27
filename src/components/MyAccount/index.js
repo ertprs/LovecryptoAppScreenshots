@@ -1,44 +1,32 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import {
-    Layout,
-    Drawer,
-  } from 'react-native-ui-kitten';
-import { SafeAreaView, withNavigation} from "react-navigation";
-import { Ionicons } from "@expo/vector-icons";
+import { List } from '@ui-kitten/components';
+import { ProfileOption } from '../ProfileOption';
 
-const drawerData = [
-  { title: 'Suporte', route: 'Suport'},
-  { title: 'Legal', route: 'Legal'},  
-  { title: 'Sobre',  route: 'About'}
-];
 
-//Lista as opções de configurações e ajuda para o usuário
-class MyAccountConfig extends React.Component {
+const data =  [
+  { title: 'Editar Perfil', icon: 'edit-outline', route: 'Detail'},
+  { title: 'Notificações', icon: 'bell-outline', route: 'Notifications'},
+  { title: 'Ajuda', icon: 'question-mark-circle-outline',route: 'Suport'},
+  { title: 'Legal', icon: 'file-text-outline', route: 'Legal'},
+ ]
 
-  onSelect = (index) => {
-    this.props.navigation.navigate(drawerData[index].route)
-  };
-  
-  render() {
-    return (
-      <Layout style={styles.container}>
-        <SafeAreaView>
-          <Drawer style = {{ justifyContent: 'center'}}
-            data={drawerData}
-            onSelect={this.onSelect}
-          />
-      </SafeAreaView>
-    </Layout>
-    );
-  }
-}
-
-export const MyAccount = withNavigation(MyAccountConfig)
+export const MyAccount = (props) => {
+  return (
+    <List
+      navigation = {props.navigation}
+      style = {styles.container}
+      data={data}
+      renderItem={ProfileOption}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    width: '100%'
+    paddingVertical: 8,
+    backgroundColor: 'transparent',
+    width: '100%',
+    marginBottom: -50,
   },
 });

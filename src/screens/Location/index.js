@@ -1,18 +1,16 @@
-import React, { Component } from "react";
-import { View, StyleSheet} from "react-native";
+import React from "react";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Text} from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 
 
-
-export class LocationScreen extends Component {
-  render() {
-    return (
-      <View>
-        <ScrollView>
+export const LocationScreen = (props) => {
+  return (
+    <View>
+      <ScrollView>
         <Text>Localização</Text>
       </ScrollView>
-      </View>
-    );
-  }
+    </View>
+  );
 }
+

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { StyleSheet, Image, AsyncStorage} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Layout, Text, Button} from 'react-native-ui-kitten'
+import { Layout, Text, Button} from '@ui-kitten/components'
 import { generalStyle } from '../../shared/generalStyle';
-import { api } from '../../config/api'
+import { api } from '../../api'
 import * as firebase from "firebase";
 
 const clear = async () => {
@@ -49,46 +49,31 @@ const deleteUserApi = async () => {
 
 const deleteUserFirebase = async () => {
   var user = firebase.auth().currentUser;
-  // console.log(JSON.stringify(user))
   user.delete().then(function() {
     console.log('usuario deletado do firebase')
   }).catch(function(error) {
     console.log(error.menssage)
   });
-
 }
 
 
 
 
-export class MyDataScreen extends Component {
-  
-  constructor(props) {
-    super(props);
-    this.state = {
-      uid: 0,
-      id: 0
-    };
-  }
-
-  
-  render() {
-    return (
-      <ScrollView>
-        <Layout style = {generalStyle.container}>
-          <Image style={generalStyle.topImageIcon} source={require('../../../assets/images/data_icon.png')} />
-          <Text style = {generalStyle.paragraph}>Ao clicar neste botão, todos os dados sobre você em nossos servidores serão excluídos e sua conta encerrada</Text>
-          <Layout style = {styles.buttonCase}>
-            <Button style = {styles.button} status='info' appearance='outline' onPress={() => clear()}>Apague meus dados</Button>
-          </Layout>
+export const MyDataScreen = (props) => {
+  return (
+    <ScrollView>
+      <Layout style = {generalStyle.container}>
+        <Image style={generalStyle.topImageIcon} source={require('../../assets/images/data_icon.png')} />
+        <Text style = {generalStyle.paragraph}>Ao clicar neste botão, todos os dados sobre você em nossos servidores serão excluídos e sua conta encerrada</Text>
+        <Layout style = {styles.buttonCase}>
+          <Button style = {styles.button} status='info' appearance='outline' onPress={() => clear()}>Apague meus dados</Button>
         </Layout>
-      </ScrollView>
-    );
-  }
+      </Layout>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-  
   buttonCase:{
     marginTop: 192,
     width: '100%',

@@ -1,109 +1,88 @@
-
 import React from 'react';
 import {
   Layout,
   Text,
   List,
   Button,
-  } from 'react-native-ui-kitten';
-import * as firebase from "firebase";
-
-
+  } from '@ui-kitten/components';
+  import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
+import { Loading } from '../../components/Loading';
 import { NoRegister } from '../../components/NoRegister';
-import { StyleSheet, TouchableNativeFeedback, ImageBackground, Image } from 'react-native';
-import api from '../../config/api'
+import { StyleSheet, TouchableNativeFeedback, ImageBackground} from 'react-native';
+
+import api from '../../api'
 
 const ArrowIcon = () => (
   <Ionicons name= {'md-arrow-round-forward'} size={20} color="#fff" />
 ); 
 
-
 const getToken = async () => {
   token = await firebase.auth().currentUser.getIdToken().then(res => {
-    // console.log(res)
     return res
   })
   return await token
 }
 
-// const getTasks = async () => {
-//   token = await getToken();
-//   console.log('get tasks')
-//   config = {
-//     headers: { Authorization: `Bearer ${token}` }
-//   }
-//   console.log(token)
-//   try{
-//       await api.get('/tasks', config).then( response => { 
-//         console.log(JSON.stringify(response))
-//         return JSON.parse(response)
-//     });
-//   }catch ( error ) {
-//     console.log(error.message)
-//   }
-// }
-
-
 const getTasks = async () => {
-  // console.log('carregando tasks')
   tasks = null;
-
   token = await getToken()
-
   config = {
     headers: { Authorization: `Bearer ${token}` }
   }
-  // console.log(token)
-
+  // console.log('Config ' + config)
   try{
     await api.get('/tasks', config).then( response => {
-    //  console.log(response.data);
-     tasks = response.data
-  });
-  }catch ( error ) {
-    console.log(error.message)
-  }
-  // console.log(tasks)
-  return tasks
+      tasks = response.data
+      
+      
+    });
+    }catch ( error ) {
+      console.log(error.message)
+    }
+    return tasks
 }
-
-
+ 
 export class SurveyList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      navigation: props.navigation,
-      tasks: []      
+      navigation: this.props.navigation,
+      tasks: [],
+      loading: true, 
     };
   }
 
-
   async componentDidMount(){
-    // console.log('carregou')
-    
-    getTasks().then(data => {
+    await getTasks().then(response => {
       this.setState({ 
-        tasks: data
+        tasks: response,
+        loading: false,
       })
+      console.log('Tarefas ' + this.state.tasks.length)
     })
-  
- }
+  } 
+
+
+  async componentDidUpdate(){
+    if(this.state.tasks.length = 0){
+
+    }
+  } 
 
   openTask = async (id) => {
     this.state.navigation.navigate('Task', {id:id});
-    // console.log('task ' + id)
   };
   
   renderItem = ({ item, index }) => (
-    <ImageBackground source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330' }} style={styles.image}>
+    <ImageBackground source={{ uri: item.campaign.cover }} style={styles.image}>
       <TouchableNativeFeedback  background={TouchableNativeFeedback.Ripple('#9843D0')}  onPress={() => this.openTask(item.id)}>
         <Layout style = {styles.overlay}>
-            <Text
-              category='s1'
-              status='success'>
-              {Number(item.points)} pontos
-            </Text>
+          <Text
+            category='s1'
+            status='success'>
+            {Number(item.points)} pontos
+          </Text>
           <Text
             category= {item.name.length < 20 ? 'h3' : 'h4'}
             status='control'>
@@ -125,23 +104,25 @@ export class SurveyList extends React.Component {
       </TouchableNativeFeedback>
     </ImageBackground>
   );
-  
-  render(){  
+
+  render(){
     return (
       <Layout>
         <List
-          style = {{paddingVertical:8, backgroundColor: '#F4FEFF'}}
+          style = {{paddingVertical:0, backgroundColor: '#F4FEFF'}}
           data={ this.state.tasks }
           renderItem={this.renderItem}
         />
-        { this.state.tasks.length == 0 &&
-          <NoRegister type = 'Tarefas'></NoRegister>
+        { this.state.loading &&
+          <Loading/>
+        }
+        { ( this.state.tasks.length == 0)  && !this.state.loading &&
+          <NoRegister type = 'tasks'/>
         }
       </Layout>
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -171,16 +152,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 0,
   },
-  backgroundImg:{
-    width: '100%',
-  },
   overlay:{
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(98,4,160,0.3)',
     paddingVertical: 24,
     paddingHorizontal: 16,
   },

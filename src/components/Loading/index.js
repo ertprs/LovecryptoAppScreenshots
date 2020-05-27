@@ -1,8 +1,18 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import {
-  Spinner, Layout
-} from 'react-native-ui-kitten'
+  Spinner, 
+  Layout
+} from '@ui-kitten/components'
+import { StyleSheet } from "react-native";
+
+
+export const Loading = () => {
+  return (
+    <Layout style = {styles.spinner}>
+      <Spinner status='success' size='giant'/>
+    </Layout>
+  );
+};
 
 const styles = StyleSheet.create({ 
   spinner:{
@@ -12,11 +22,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-export const Loading = () => {
-  return (
-    <Layout style = {styles.spinner}>
-      <Spinner status='success' size='giant'/>
-    </Layout>
-  );
-};

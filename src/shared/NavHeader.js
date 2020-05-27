@@ -1,28 +1,71 @@
-// import React from "react";
-// import { Stylesheet, View} from 'react-native'
-// import { Layout, Text, Divider, Icon, TopNavigation, TopNavigationAction} from 'react-native-ui-kitten'
-// import { Ionicons } from "@expo/vector-icons";
+import React from 'react';
+import { Icon, Layout, MenuItem, OverflowMenu, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
+import { StyleSheet } from 'react-native';
 
-// BackIcon = () => (
-//     <Ionicons name= {'md-arrow-back'} size={20} color="#000" />
-// );
+const BackIcon = (props) => (
+  <Icon fill = 'black' style = {{height: 30, width: 30}} name='arrow-back'/>
+);
 
-// export default function Header ({ navigation, title}){
+const EditIcon = (props) => (
+  <Icon {...props} name='edit'/>
+);
 
-//     BackAction = () => (
-//         <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
-//     );
-    
-//     navigateBack = () => {
-//         navigation.goBack(null);
-//         //console.log(navigation)
-//     };
+const MenuIcon = (props) => (
+  <Icon {...props} name='more-vertical'/>
+);
 
-//     return(
-//         <View>  
-//             <TopNavigation title={title} alignment='center' leftControl={this.BackAction()}/>
-//         </View>
-//     );
+const InfoIcon = (props) => (
+  <Icon {...props} name='info'/>
+);
 
-// }
+const LogoutIcon = (props) => (
+  <Icon {...props} name='log-out'/>
+);
 
+export const TopNavigationAccessoriesShowcase = (props) => {
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+  const renderMenuAction = () => (
+    <TopNavigationAction icon={MenuIcon} onPress={toggleMenu}/>
+  );
+  navigateBack = () => {
+    props.navigation.goBack(null);
+  };
+  const renderRightActions = () => (
+    <React.Fragment>
+      <TopNavigationAction icon={EditIcon}/> 
+      <OverflowMenu
+        anchor={renderMenuAction}
+        visible={menuVisible}
+        onBackdropPress={toggleMenu}>
+        <MenuItem accessoryLeft={InfoIcon} title='About'/>
+        <MenuItem accessoryLeft={LogoutIcon} title='Logout'/>
+      </OverflowMenu>
+    </React.Fragment>
+  );
+
+  const renderBackAction = () => (
+    <TopNavigationAction onPress = {this.navigateBack} icon={BackIcon}/>
+  );
+
+  return (
+    <Layout style={styles.container} level='1'>
+      <TopNavigation
+        alignment='center'
+        title= {props.title}
+        subtitle = {props.subtitle}
+        accessoryLeft={renderBackAction}
+        accessoryRight={renderRightActions}
+      />
+    </Layout>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    // minHeight: 128, 
+    marginTop: 26,
+  },
+});

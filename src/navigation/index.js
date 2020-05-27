@@ -1,9 +1,9 @@
 import {
-  createStackNavigator,
   createAppContainer,
   createSwitchNavigator
 } from "react-navigation";
 
+import { createStackNavigator } from 'react-navigation-stack'
 import {
   WelcomeScreen
 } from '../screens/Welcome'
@@ -17,6 +17,11 @@ import {
 } from '../screens/Signup'
 
 import {
+  ForgotPasswordScreen
+} from '../screens/ForgotPassword'
+
+
+import {
   AuthLoadingScreen
 } from '../screens/AuthLoading'
 
@@ -28,7 +33,8 @@ const AuthStack = createStackNavigator(
   { 
     Landing: WelcomeScreen,
     LoginScreen: LoginScreen, 
-    SignupScreen: SignupScreen
+    SignupScreen: SignupScreen,
+    ForgotPassword: ForgotPasswordScreen
   },
   { 
     headerMode: 'none',

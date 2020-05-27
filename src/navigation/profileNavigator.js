@@ -1,6 +1,7 @@
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-
-
+import {  createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack'
+import React from 'react'
+import { TopNavigationAccessoriesShowcase } from '../shared/NavHeader'
 import {
     ContactScreen
 } from '../screens/Contact'
@@ -13,9 +14,29 @@ import {
 import {
     SuportScreen
 } from '../screens/Suport'
+
+import {
+    ChatScreen
+} from '../screens/Chat'
+
+
 import {
     NotificationScreen
 } from '../screens/Notification'
+
+import {
+    ChangePasswordScreen
+} from '../screens/ChangePassword'
+
+
+import {
+    ShareAppScreen
+} from '../screens/ShareApp'
+
+import {
+    AssociedAccountsScreen
+} from '../screens/AssociedAccounts'
+
 
 import {
     DetailScreen
@@ -23,44 +44,31 @@ import {
 import {
     DetailChangeScreen
 } from '../screens/DetailChange'
-
-import {
-    AboutScreen
-} from '../screens/About'
-
+ 
   
 import { LegalNavigator } from '../navigation/legalNavigator'
 
 const DetailNavigator = createStackNavigator({
     Detail : {
         screen: DetailScreen,
-        navigationOptions: {
-            title: 'Detalhes',
-            // headerTitleStyle: { 
-            //     textAlign:"center", 
-            //     flex:1 
-            // },
-        },       
+        navigationOptions: ({navigation}) => ({
+            header: null //<TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Detalhes'/>,
+        })       
     },
     DetailChange:{
         screen: DetailChangeScreen,
-        navigationOptions: {
-            title: 'Editar',
-            // headerTitleStyle: { 
-            //     textAlign:"center", 
-            //     flex:1 
-            // },
-        }       
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Editar Detalhes'/>,
+        })     
     },
 });
 
 export const Navigator = createStackNavigator({
     Account : {
         screen: ContactScreen,
-        navigationOptions: {
-            header: null,
-            //title: 'Meu Perfil',
-        }    
+        navigationOptions: ({navigation}) => ({
+            header: null // <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Profile'/>,
+        })       
     },
     Detail : {
         screen: DetailNavigator,
@@ -92,15 +100,39 @@ export const Navigator = createStackNavigator({
     },
     Notifications:{
         screen: NotificationScreen,
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Configurações'/>,
+        })   
+    },
+    ChangePassword:{
+        screen: ChangePasswordScreen,
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Configurações' subtitle = 'Alterar Senha'/>,
+        })   
+    },
+    Suport:{
+        screen: SuportScreen,
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Suporte'/>,
+        })    
+    },
+    Chat:{
+        screen: ChatScreen,
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Suporte' subtitle = 'Falar com suporte'/>,
+        })    
+    },
+    AssociedAccounts:{
+        screen: AssociedAccountsScreen,
         navigationOptions: {
             header: null,
         }    
     },
-    Suport:{
-        screen: SuportScreen,
+    ShareApp:{
+        screen: ShareAppScreen,
         navigationOptions: {
-            title: 'Suporte',
-        }     
+            header: null,
+        }    
     },
     Legal:{
         screen: LegalNavigator,
@@ -108,12 +140,7 @@ export const Navigator = createStackNavigator({
             header: null,
         }    
     }, 
-    About:{
-        screen: AboutScreen,
-        navigationOptions: {
-            title: 'Sobre o App',
-        }    
-    }, 
+   
 });
 
 export const ProfileNavigator = createAppContainer(Navigator);

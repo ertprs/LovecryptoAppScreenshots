@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, ScrollView, KeyboardAvoidingView, ImageBackground, StyleSheet, Image, StatusBar } from "react-native";
 import { AuthForm } from "../../components/AuthForm";
-import { Layout, Text, Button, Input, Icon} from 'react-native-ui-kitten';
+import { Layout, Text, Button, Input, Icon} from '@ui-kitten/components'
 
 /**
 |--------------------------------------------------
@@ -11,8 +11,8 @@ import { Layout, Text, Button, Input, Icon} from 'react-native-ui-kitten';
 
 
 
-export class SignupScreen extends Component {
-  render() {
+export const SignupScreen = (props) => {
+  
     return (
       // <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
       //   <View style={styles.form}>
@@ -23,14 +23,14 @@ export class SignupScreen extends Component {
 
       // <KeyboardAvoidingView behavior="padding"  >
     
-       <ImageBackground source={require('../../../assets/images/login_bg.png')} style={styles.backgroundImg}>
+       <ImageBackground source={require('../../assets/images/login_bg.png')} style={styles.backgroundImg}>
         <ScrollView>
           <Layout style={styles.container}>
             <Layout style={styles.title}>
-              <Image  style={{height: 40, resizeMode: 'contain'}} source={require('../../../assets/images/logo_white.png')} ></Image>
+              <Image  style={{height: 40, width: 260, resizeMode: 'contain'}} source={require('../../assets/images/logo_white.png')} ></Image>
             </Layout>
-              <AuthForm isSignup/>
-              <Button  appearance='ghost' status='control' onPress={() =>  this.props.navigation.navigate("LoginScreen")}>Já tem conta? Entre</Button>
+            <AuthForm isSignup/>
+            <Button  appearance='ghost' status='control' onPress={() =>  props.navigation.navigate("LoginScreen")}>Já tem conta? Entre</Button>
           </Layout>
         </ScrollView>
       </ImageBackground>
@@ -42,7 +42,7 @@ export class SignupScreen extends Component {
 
     );
   }
-}
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
@@ -55,8 +55,6 @@ const styles = StyleSheet.create({
  
   },
   title: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
     paddingVertical: 16,
     paddingHorizontal: 16,
     justifyContent: 'center',
@@ -66,14 +64,8 @@ const styles = StyleSheet.create({
     marginTop: 26,
   },
   backgroundImg:{
-    // width: '100%',
-    // Without height undefined it won't work
-    // height: undefined,
-    // figure out your image aspect ratio
-    // aspectRatio: 400 / 500,
     height: 1280,
     width: '100%',
-    //paddingTop: 50,
     flex: 1,
     resizeMode: 'cover', // or 'stretch'
   },

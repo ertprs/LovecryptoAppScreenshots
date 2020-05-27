@@ -1,11 +1,10 @@
 import React from "react";
 import { StyleSheet } from 'react-native';
-import { EmailAuth } from "./emailAuth";
-import { Layout, Text } from "react-native-ui-kitten";
-import { FacebookAuth, GoogleAuth } from "./SocialAuth";
+import { Layout, Text } from '@ui-kitten/components'
+// import { FacebookAuth, GoogleAuth } from "./SocialAuth";
 import { Signup } from "./emailAuth/signup";
 import { Login } from './emailAuth/login'
-
+import { SocialAuth } from './SocialAuth'
 
 //Reune todas as formas de Login/Signup
 export const AuthForm = props => {
@@ -23,13 +22,14 @@ export const AuthForm = props => {
         
       </Layout>
       {
-        isSignup ? <Signup/> : <Login/>
+        isSignup ? <Signup/> : <Login navigation = {props.navigation}/>
       }
       
       {/* <Layout style={styles.buttonRow}>
         <FacebookAuth />
         <GoogleAuth />
       </Layout> */}
+      <SocialAuth/>
     </Layout>
   );
 };
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
   container:{
     flexDirection: 'column',
     flexWrap: 'wrap',
-    paddingVertical: 32,
     paddingHorizontal: 32,
     width: '100%',
     backgroundColor: 'transparent'
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red'
   },
   formHeading:{
-    paddingTop: 32,
+    paddingTop: 24,
     backgroundColor: 'transparent',
   }
 });

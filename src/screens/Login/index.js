@@ -1,15 +1,23 @@
-import React, { Component } from "react";
+import React from "react";
 import { ImageBackground }  from 'react-native';
 import { AuthForm } from "../../components/AuthForm";
-import { Button, Layout} from 'react-native-ui-kitten';
-import { ScrollView, StyleSheet, StatusBar, Image } from "react-native";
+import { Button, Layout} from '@ui-kitten/components';
+import { ScrollView, StyleSheet, Image } from "react-native";
 
-
-
-
-
-const haveAccount = async () =>  {
-  this.props.navigation.navigate("SignupScreen");  
+export const LoginScreen = (props) => { 
+  return (
+    <ImageBackground source={require('../../assets/images/login_bg.png')} style={styles.backgroundImg}>
+      <ScrollView>
+        <Layout style={styles.container}>
+          <Layout style={styles.title}>
+            <Image  style={{height: 40, width: 260, resizeMode: 'contain'}} source={require('../../assets/images/logo_white.png')} ></Image>
+          </Layout>
+          <AuthForm navigation = {props.navigation}/>
+          <Button  appearance='ghost'  status='control' onPress={() =>  props.navigation.navigate("SignupScreen")}>Não tem conta? Cadastre-se</Button>
+        </Layout>    
+      </ScrollView>
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -21,11 +29,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
- 
   },
   title: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
     paddingVertical: 16,
     paddingHorizontal: 16,
     paddingTop: 32,
@@ -39,7 +44,7 @@ const styles = StyleSheet.create({
     height: 1280,
     width: '100%',
     flex: 1,
-    resizeMode: 'cover', // or 'stretch'
+    resizeMode: 'cover',
   },
   login: {
     flexDirection: 'column',
@@ -74,53 +79,3 @@ const styles = StyleSheet.create({
     width: '100%'
   },
 });
-
-export class LoginScreen extends Component {
-  
-  state = {
-    mediumValue: '',
-    value: '',
-    secureTextEntry: true,
-    primaryChecked: false,
-  };
-
-  onMediumTextChange = (mediumValue) => {
-    this.setState({ mediumValue });
-  };
-  
-  onChangeText = (value) => {
-    this.setState({ value });
-  };
-
-  onIconPress = () => {
-    const secureTextEntry = !this.state.secureTextEntry;
-    this.setState({ secureTextEntry });
-  };
-  
-  renderIcon = (style) => {
-    const iconName = this.state.secureTextEntry ? 'eye-off' : 'eye';
-    return (
-      <Icon {...style} name={iconName}/>
-    );
-  };
-
-  onPrimaryChange = (primaryChecked) => {
-    this.setState({ primaryChecked });
-  };
-
-  render() {
-    return (
-      <ImageBackground source={require('../../../assets/images/login_bg.png')} style={styles.backgroundImg}>
-        <ScrollView>
-          <Layout style={styles.container}>
-            <Layout style={styles.title}>
-              <Image  style={{height: 40, resizeMode: 'contain'}} source={require('../../../assets/images/logo_white.png')} ></Image>
-            </Layout>
-            <AuthForm/>
-            <Button  appearance='ghost'  status='control' onPress={() =>  this.props.navigation.navigate("SignupScreen")}>Não tem conta? Cadastre-se</Button>
-          </Layout>    
-        </ScrollView>
-      </ImageBackground>
-    );
-  }
-}

@@ -1,104 +1,174 @@
-import React from 'react';
-import { StyleSheet, ToastAndroid, ImageBackground} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, ToastAndroid, ImageBackground, TouchableNativeFeedback} from 'react-native';
 import {
   Layout,
   Text,
-  Button,
-} from 'react-native-ui-kitten';
+  Divider,
+  Button, 
+  Icon
+} from '@ui-kitten/components';
 import { Ionicons } from "@expo/vector-icons";
-import {AsyncStorage} from 'react-native';
+import  {AsyncStorage} from 'react-native';
+import { getData } from '../../memoryAccess/getData'
+import { Hint } from '../Hint'
+// const getUser = async () => {
+//   let usuario = null;
+//   try {
+//     usuario = await AsyncStorage.getItem('user') || 'none';
+//   } catch (error) {
+//     console.log(error.message);
+//   } 
+//   return JSON.parse(usuario)
+// }
 
-const placeholderValue = '--';
-const placeholderCurrency = '-----';
+// export const HeadWallet  = (props) => {
+  const StarIcon = (props) => (
+    <Icon fill ='red' style={{width: 20, height: 20}} name='star'/>
+  );
+  
+ export  class HeadWallet extends React.Component {
 
-const getUser = async () => {
-  let usuario = null;
-  try {
-    usuario = await AsyncStorage.getItem('user') || 'none';
-  } catch (error) {
-    console.log(error.message);
-  } 
-  return JSON.parse(usuario)
-}
 
-export class HeadWallet extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 0,
-      currency: 'pontos',
-      visible: true,
-    };
+  
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        points: 0,
+        value: 0,
+        currency: '',
+        visible: false,
+      };
+    }
+  
+
+  // const [value, setValue] = useState(0)
+  // const [points, setPoints] = useState(0)
+  // const [currency, setCurrency ] = useState('')
+  // const [visibleToolTipPoints, setVisibleToolTipPoints ] = useState(false)
+
+  // useEffect( async () => {    
+  //   user = await getData('@userData')
+  //   setValue(user.balance)
+  //   setPoints(user.points)
+  //   setCurrency('cUSD')
+  // }, [])
+
+  
+  async componentDidMount(){
+    user = await getData('@userData')
+    // console.log(user)
+    this.setState({ 
+      points: user.points,
+      value: user.balance ,
+      currency: 'cUSD',
+    })
+  
   }
 
-  //Recupera dados locais
-  componentDidMount(){
-    getUser().then(data => {
-      this.setState({ 
-        value: data.points,
-      })
-    });
+
+  async componentDidUpdate(){
+    user = await getData('@userData')
+    // console.log(user)
+    this.setState({ 
+      points: user.points,
+      value: user.balance ,
+      // currency: 'cUSD',
+    })
+  
   }
 
 
   eyeIcon = () => (
-    <Ionicons name= { this.state.visible ? 'md-eye' : 'md-eye-off'} size={20} color="#fff" />
+    <Ionicons name= { visible ? 'md-eye' : 'md-eye-off'} size={20} color="#fff" />
   );
   
   toggleEye = () => {
-    this.state.visible = !this.state.visible
-    console.log('mudou' + this.state.visible)
+    setVisible(!visible)
+    console.log('mudou' + visible)
   }
 
   onTabSelect = (selectedIndex) => {
     this.setState({ selectedIndex });
   };
 
-  // a component that calls the imperative ToastAndroid API
-  Toast = () => {
+  ToastPontos = () => {
+
     ToastAndroid.showWithGravityAndOffset(
-      "Saldo deve ser acima de U$ 5.00",
+      'Você deve ter pelo menos 10000 pontos para converter seus pontos',
       ToastAndroid.LONG,
       ToastAndroid.BOTTOM,
       25,
-      50,
+      100,
     );
     return null;
   };
 
+  ToastRetirar = () => {
+
+    ToastAndroid.showWithGravityAndOffset(
+      'Seu saldo deve ser superior a 5 cUSD para solicitar retiradas',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      100,
+    );
+    return null;
+  };
+  
   requestWithdraw = () => {
     console.log('request withdraw')
     this.props.navigate('withdraw')
     return null;
   };
 
-render(){
-  return (
-    
-    <ImageBackground source={require('../../../assets/images/wallet_bg.png')} style={styles.backgroundImg}>
-      <Layout style = {styles.content}>
-        <Layout style = {styles.info}>
-          <Layout style = {{backgroundColor: 'transparent', display: 'flex', flexDirection: 'row'}}>
-            <Text category='h1' status='control' style = {styles.value}>{ this.state.visible ? this.state.value : placeholderValue } </Text>
-            <Text category='h3' status='control' style = {styles.currency}>{ this.state.visible ? this.state.currency : placeholderCurrency} </Text>
+  // const [visible, setVisible] = React.useState(false);
+  render(){
+    return (
+      <Layout style={{maxHeight: 260}}>
+        <ImageBackground source={require('../../assets/images/wallet_bg.png')} style={styles.backgroundImg}/>
+        <Layout style = { styles.card}>
+        
+        <Layout style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+          <Text category='label'>Seu saldo</Text>
+          <Layout style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+            <Text category='h5' style={{marginTop: 8}}>{this.state.value.toFixed(2)}</Text>
+            <Text category='c1' style={{marginTop: 16}}> {this.state.currency}</Text>
           </Layout>
-          <Layout style = {{backgroundColor: 'transparent', display: 'flex', flexDirection: 'row', marginTop: 8}}>
-            <Text category='c2' status='control' style = {styles.text}>Sua pontuação</Text> 
+          <TouchableNativeFeedback  background={TouchableNativeFeedback.Ripple('#D0E9FA')}  onPress={() => this.ToastRetirar()}>
+            <Text  style = {{marginTop: 32, marginBottom: 16}} status='primary'>retirar</Text>
+          </TouchableNativeFeedback>
+        </Layout>
+        <Layout style={{borderWidth: 0.2, borderColor: '#ddd', height: 60}}></Layout>
+          <Layout style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Text category='label'>Pontuação</Text>
+            <Text category='h5' style={{marginTop: 8}}> {this.state.points}</Text>
+            <TouchableNativeFeedback  background={TouchableNativeFeedback.Ripple('#D0E9FA')}  onPress={() =>  this.ToastPontos()}>
+              <Text style = {{marginTop: 32, marginBottom: 16}} status='primary'>converter</Text>
+            </TouchableNativeFeedback>
           </Layout>
         </Layout>
-        {/* <Layout style = {{  width: 50, marginVertical: 60, backgroundColor: 'red'}}>
-          <Button style={styles.button} appearance='ghost' status='danger' icon={this.eyeIcon} onPress = {this.toggleEye} />
-        </Layout> */}
-      </Layout>
-    </ImageBackground>
-  
-  );
+      </Layout> 
+    );
   }
 }
 
 const styles = StyleSheet.create({
-  value:{
-    // paddingTop: 8,
+  card: {
+    shadowColor: "#000", 
+    shadowOffset: {	width: 0,	height: 7,},
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+    elevation: 14, 
+    display: 'flex', 
+    flexDirection: 'row',
+    paddingHorizontal: 32, 
+    paddingTop: 32, 
+    margin: 16,
+    marginBottom: 24, 
+    borderRadius: 10, 
+    justifyContent: 'space-around',
+    top: -130
   },
   currency:{
     paddingTop: 6,
@@ -130,7 +200,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',   
     width: '100%',
     height: 200,
-    marginTop: 25,
   },
   buttonRow:{
     paddingBottom: 16,

@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { Image} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Layout, Text} from 'react-native-ui-kitten'
+import { Layout, Text} from '@ui-kitten/components'
 import { generalStyle } from '../../shared/generalStyle';
 
-export class PrivacyScreen extends Component {
-  render() {
+export const PrivacyScreen = (props) => {
+  
     return (
       <ScrollView>
         <Layout style = {generalStyle.container}>  
-          <Image style={generalStyle.topImageIcon} source={require('../../../assets/images/privacy_icon.png')} />
+          <Image style={generalStyle.topImageIcon} source={require('../../assets/images/privacy_icon.png')} />
           <Text style = {generalStyle.paragraph}>
             Lovecrypto Inc. criou o aplicativo Lovecrypto como um aplicativo gratuito. Este SERVIÇO é fornecido pela Lovecrypto Inc. sem custo e destina-se ao uso como está.
           </Text>
@@ -104,4 +104,4 @@ export class PrivacyScreen extends Component {
       </ScrollView>
     );
   }
-}
+

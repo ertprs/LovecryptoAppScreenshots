@@ -1,3 +1,42 @@
-![Splash Screen](https://lh3.googleusercontent.com/8a4cjbaxHIiQV-lfpmNngeArP_5bQXaQE_4-6CB5-au1k2SEle8MgXfxYzkUsvlcjQVb6bEIB7kE)![Welcome Screen](https://lh3.googleusercontent.com/5iuE95cf1Uds2hE2_BHp8iU_XnSNQCksOROQeZRioSmcMsniqLwzV5FLOWO4AR_3lbXofLO96UUu)![Signup Screen](https://lh3.googleusercontent.com/hno3PYvEojBS_NA0wpXlrAmuibbNs5sN5msDKcTrvePJ4fiVf1vwU_rguIn_qNSYpkjXHdF0eYdx)![Login Screen](https://lh3.googleusercontent.com/Z36z0EyZ5BgXkgXHrLQZ5lbOw0lbo5krNC3oDen_5yfqzAB7Zi7C1kxg18EXmuHlfd5t-I0xED_Q)![Home Screen](https://lh3.googleusercontent.com/2GZXPLo4yi1zqOE-D0LM-T8wre-XA4rtE0a5d9Q1tOfhldnywBAxcDmYEOVQNIeN_-2dIDURd0Ca)![ ](https://lh3.googleusercontent.com/bWhdqwYQAYylMS2G-P0klgzVNegks_JComgqQCgC5vJsF8El_ISXibP5SOiqYmfunrpxYW1eUrR5 "Wallet Screen")
-![enter image description here](https://lh3.googleusercontent.com/M1aZxaa3q7n36WGxpXhUmcwx9Q73a5c9nfW3kMlsYxtHHbPUN1icfYEmpD2mHMdaSRZiD1sRFXXf)
-![enter image description here](https://lh3.googleusercontent.com/gXQ_fC_-FajSh4Gx2SWa02rJ0L2UqNOKEUY7dEJJNaT1-H071okjuA49m-pBQW2twImUMAOekuol)![enter image description here](https://lh3.googleusercontent.com/s-UpLZKl5toT0Pw2YpN9qL7Ha7aqsgkQayJOPNkCL3YJhurgGAUgCHbVNWC9GZTysf1HbBbImJ5v)![enter image description here](https://lh3.googleusercontent.com/hYwTOU1BBj2NKDXeqOlB5Z5ZZCZqDF8jpB2TwFWXTdB9Vfru_g54cJwHFktg-sOV7Vb2ND7bIK61)![enter image description here](https://lh3.googleusercontent.com/xHSs8mxa7UiLGDPgiQXc2jpYNoQiJgOwjp7FTM25k-2_co--W7EFUoq3n9ad53_55DY_3GhtxE9I)![enter image description here](https://lh3.googleusercontent.com/89O0DMvtjujbnGrXIAiSLMIzPzSBorVgRJ4_eWJOSIj7RF1O10qtPxvvLdy4q2D8_4ilWHU-fDxQ)![enter image description here](https://lh3.googleusercontent.com/Ly_oDB7j9tvijPARET9YTGh-JNASQcsDTpfmWwoIzu8ud4t7dCketVCry6flu22-azjOYX_v6Zsn)![enter image description here](https://lh3.googleusercontent.com/ajyCTIdxQ9kjV035x_vExfRK_-2e0ULr1fCtgd5mcsWTC6fv1_I4xYMG94BinkBv97Uac0EsRwwk)![enter image description here](https://lh3.googleusercontent.com/Zj3enkkCpCznjqXiIXrHz1DR0wzVmdHEwdIsRPaZH7NO3NyQWIW8517zjElxXeNp-s3jjJAPrEbN)![enter image description here](https://lh3.googleusercontent.com/xLQNt3FiZt6NeCcZQoM2FyUDcnUvJEyQlOOzRiG0mTPEVAjUZJAXK89QNrMCIduVyVNMcYqbTZCn)
+# React native with google login, facebook login and update logged-in user's information in firebase's realtime database  
+
+- Learn how to add Expo(Version 36.0.0) Google & Facebook Login to your app and save it to your Firebase Realtime Database 
+
+![Screenshot](Sample_signin.png)
+
+
+### Reference:
+* [React Native Firebase Tutorials #1](https://www.youtube.com/watch?v=ZcaQJoXY-3Q&list=PLy9JCsy2u97nVN5GxrjC6rv9XfyxoDtB_)
+* [React Native Firebase Tutorials #2](https://www.youtube.com/watch?v=GZKaVJEd4JU&list=PLy9JCsy2u97nVN5GxrjC6rv9XfyxoDtB_&index=2)
+* https://docs.expo.io/versions/v36.0.0/sdk/google/
+* https://reactnavigation.org/docs/react-native-screens/
+* https://blog.expo.io/react-native-google-sign-in-with-expo-d1707579a7ce
+* https://docs.expo.io/versions/latest/sdk/facebook/
+* https://hackernoon.com/firebase-auth-using-facebook-log-in-on-expo-react-native-2c9f1aaf26b7
+
+### Install Dependencies
+
+* expo init your-project-name
+* cd your-project-name
+* npm install --save react-navigation
+* expo install react-native-gesture-handler
+* npm install expo-google-app-auth
+* npm install --save firebase
+* expo install react-native-screens
+* expo install expo-facebook
+* npm install
+* expo start
+
+
+### Configure config.js 
+```sh
+export const firebaseConfig = {
+  apiKey: '',
+  authDomain: '',
+  databaseURL: '',
+  projectId: '',
+  storageBucket: ''
+};
+```
+
+### Package name must be 'host.exp.exponent' if runs in local!!

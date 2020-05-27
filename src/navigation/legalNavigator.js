@@ -1,5 +1,8 @@
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import {  createAppContainer } from 'react-navigation';
+import { TopNavigationAccessoriesShowcase } from '../shared/NavHeader'
+import { createStackNavigator } from 'react-navigation-stack'
 
+import React from 'react'
 import{
     LegalScreen,
 } from '../screens/Legal'
@@ -19,27 +22,27 @@ import{
 export const Navigator = createStackNavigator({
     Legal:{
         screen: LegalScreen,
-        navigationOptions: {
-            title: 'Legal',
-        }    
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Legal'/>,
+        })    
     },
     Therms:{
         screen: ThermsScreen,
-        navigationOptions: {
-            title: 'Termos e Condições',
-        }    
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Termos e Condições'/>,
+        })    
     },
     Privacy:{
         screen: PrivacyScreen,
-        navigationOptions: {
-            title: 'Politica de Privacidade',
-        }    
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Politica de privacidade'/>,
+        })    
     },
     MyData:{
         screen: MyDataScreen,
-        navigationOptions: {
-            title: 'Meus Dados',
-        }    
+        navigationOptions: ({navigation}) => ({
+            header: <TopNavigationAccessoriesShowcase navigation = {navigation}  title = 'Meus dados'/>,
+        })    
     }  
 });
 

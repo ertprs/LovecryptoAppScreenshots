@@ -1,28 +1,27 @@
 import * as firebase from "firebase";
 import { StyleSheet} from 'react-native'
-import React, { Component } from "react";
-import { Layout } from 'react-native-ui-kitten'
+import React, { useEffect } from "react";
+import { Layout } from '@ui-kitten/components'
 import { Loading } from "../../components/Loading";
 import { generalStyle } from '../../shared/generalStyle'
 
 //Tela que carrega depois da splash screen, redireciona para a Home, 
 //caso logado, ou para a Tela de bem vindo
-export class AuthLoadingScreen extends Component {  
+export const AuthLoadingScreen = (props) =>{  
 
-  componentDidMount() {
+  useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(
+      props.navigation.navigate(
         user ? "Home" : "Landing"
       );
     });
-  }
-  render() {
-    return (
-      <Layout style = {generalStyle.container} >
-        <Loading style = {styles.spinner} />
-      </Layout>
-    );
-  }
+  })
+
+  return (
+    <Layout style = {generalStyle.container} >
+      <Loading style = {styles.spinner} />
+    </Layout>
+  );
 }
 
 const styles = StyleSheet.create({ 
