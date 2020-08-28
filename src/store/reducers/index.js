@@ -1,12 +1,12 @@
-import { combineReducers } from "redux";
-import { authReducer } from "./auth.reducer";
+import { combineReducers } from 'redux';
+import { authReducer } from './authReducer';
+import { userReducer } from './userReducer';
+import { configReducer } from './configReducer';
+import { withdrawReducer } from './withdrawReducer';
 
-/**
-|--------------------------------------------------
-| Main Reducers Hub 🔵
-|--------------------------------------------------
-*/
-
-export const rootReducer = combineReducers({
-  authReducer
+export default rootReducer = combineReducers({
+    authState: authReducer,
+    userState: userReducer,
+    configState: configReducer,
+    withdrawState: withdrawReducer,
 });

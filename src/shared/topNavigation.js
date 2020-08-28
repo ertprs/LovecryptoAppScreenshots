@@ -1,11 +1,10 @@
 import React from 'react';
-import { Icon, Layout, MenuItem, OverflowMenu, TopNavigation, TopNavigationAction, Divider } from '@ui-kitten/components';
+import { Icon, Layout, MenuItem, OverflowMenu, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 
-const BackIcon = (style) => (
-  <Icon {...style} name='arrow-back'/>
+const BackIcon = (props) => (
+  <Icon {...props} name='arrow-back'/>
 );
- 
 
 const EditIcon = (props) => (
   <Icon {...props} name='edit'/>
@@ -23,7 +22,7 @@ const LogoutIcon = (props) => (
   <Icon {...props} name='log-out'/>
 );
 
-export const TopNavigationAccessoriesShowcase = (props) => {
+export const TopNavigationHeader = (props) => {
 
   const [menuVisible, setMenuVisible] = React.useState(false);
 
@@ -49,7 +48,7 @@ export const TopNavigationAccessoriesShowcase = (props) => {
   );
 
   const renderBackAction = () => (
-    <TopNavigationAction icon={BackIcon}/>
+    <TopNavigationAction icon={BackIcon} onPress = {() => props.navigation.goBack()}/>
   );
 
   return (
@@ -58,16 +57,15 @@ export const TopNavigationAccessoriesShowcase = (props) => {
         alignment='center'
         title= {props.title}
         subtitle= {props.subtitle}
-        accessoryLeft={renderBackAction()}
+        accessoryLeft={renderBackAction}
         // accessoryRight={renderRightActions}
       />
- 
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 26,
+    // minHeight: 128,
   },
-});
+})

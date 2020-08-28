@@ -23,6 +23,35 @@ export const generalStyle = StyleSheet.create({
     paddingTop: 16,
   },
   button:{
-    marginVertical: 4,
-  }
+    marginVertical: 6,
+  },
+  input:{
+    marginVertical: 6,
+  },
+  card: {
+    shadowColor: "#000", 
+    shadowOffset: {	width: 0,	height: 7,},
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+    elevation: 14, 
+    flexDirection: 'row',
+    padding: 16, 
+    margin: 16,
+    borderRadius: 10, 
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  cardSection: {
+    
+     
+    padding: 16, 
+   
+    borderRadius: 10, 
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 });
