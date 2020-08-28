@@ -1,35 +1,36 @@
 import React from "react";
 import { StyleSheet } from 'react-native';
-import { Layout, Text } from '@ui-kitten/components'
-// import { FacebookAuth, GoogleAuth } from "./SocialAuth";
+import { Layout, Text, Button } from '@ui-kitten/components'
 import { Signup } from "./emailAuth/signup";
 import { Login } from './emailAuth/login'
 import { SocialAuth } from './SocialAuth'
 
 //Reune todas as formas de Login/Signup
 export const AuthForm = props => {
-  const { isSignup } = props;
 
+  const isSignup = props.isSignup;
+  
   return (
     <Layout style={styles.container}>
-      <Layout  style={styles.formHeading}>
+      <Layout  style={{backgroundColor: 'transparent',}}>
         <Text  category='h3' status='control'>
           {isSignup ? "Cadastro" : "Login"}
         </Text>
-        <Text category='s1' appearance = 's1' status='control'>
+        <Text category='s1' appearance = 's1' status='control' style = {{marginBottom: 16,}}>
           {isSignup ? "Entre para a comunidade Lovecrypto" : "Acesse sua conta"}
         </Text>
-        
       </Layout>
       {
         isSignup ? <Signup/> : <Login navigation = {props.navigation}/>
       }
-      
-      {/* <Layout style={styles.buttonRow}>
-        <FacebookAuth />
-        <GoogleAuth />
-      </Layout> */}
       <SocialAuth/>
+      <Layout style = {{padding: 24, alignItems: 'center', backgroundColor: 'transparent'}}>
+      {isSignup ? 
+       <Button appearance='ghost' onPress = {() =>  props.navigation.navigate('Login')} status='control'>Já tem conta? Entre</Button>
+       :
+       <Button appearance='ghost' onPress = {() =>  props.navigation.navigate('Signup')} status='control'>Não tem Conta? Crie</Button> 
+       }
+      </Layout>
     </Layout>
   );
 };
@@ -42,26 +43,4 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent'
   },
-  buttonRow:{
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 4,
-    paddingTop: 32,
-    justifyContent: 'space-around',
-    backgroundColor: 'transparent',
-  },
-  section:{
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    paddingVertical: 48,
-    paddingHorizontal: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: 'red'
-  },
-  formHeading:{
-    paddingTop: 24,
-    backgroundColor: 'transparent',
-  }
 });

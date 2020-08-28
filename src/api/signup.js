@@ -1,27 +1,23 @@
-import * as firebase from "firebase";
-import api from './'
- 
+import { api } from './'
+import auth from '@react-native-firebase/auth';
 
-export const registerApi = async (email, name, uid) => {
- 
-  token = await firebase.auth().currentUser.getIdToken()
-  body = {
-      email: email,
-      name: name,
-      firebase_uid: uid
-  }
+export const registerApi = async(email, name, uid, code) => {
+  token = await auth().currentUser.getIdToken()
   config = {
     headers: { Authorization: `Bearer ${token}` }
   }
-  data = {
+  let data = {
     email: email,
     name: name,
-    firebase_uid: uid
-  }
- 
+    firebase_uid: uid,
+    recommended_by: code
+  } 
   try{
       await api.post('/register', data, config)
+      console.log('Sucesso ao cadastrar na api')
+      auth().currentUser.sendEmailVerification()
   }catch ( error ) {
-    console.log(error.message)
+    console.log('Signup api error: ' + error.message)
+    return error
   }
 }

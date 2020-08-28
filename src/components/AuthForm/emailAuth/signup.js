@@ -1,18 +1,22 @@
+//Importações Externas
 import * as Yup from 'yup';
 import { Formik } from "formik";
-import * as firebase from "firebase";
-import api from '../../../api';
-import React, { Fragment }  from "react";
-import ErrorMessage from '../../ErrorMessage';
-import { View,  StyleSheet, SafeAreaView} from "react-native";
-import { Button, Input, Layout, Spinner, Text, CheckBox} from '@ui-kitten/components';
+import auth from '@react-native-firebase/auth';
+import React, { Fragment, useState }  from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleSheet, TouchableWithoutFeedback, } from "react-native";
+import { Button, Input, Layout, Icon, Text, CheckBox, } from '@ui-kitten/components';
+import { loginStart, loginFailure, loginSuccess, signUpStart, signUpSuccess, signUpFailure } from '../../../store/actions/auth'
  
-
-import  { registerApi }   from '../../../api/signup'
-import { loginApi }   from '../../../api/login'
-
+//Importações Internas
+import { loginApi } from '../../../api/login';
+import ErrorMessage from '../../errormenssage';
+import { registerApi } from '../../../api/signup';
+import { setUser } from '../../../store/actions/user';
+import LoadingIndicator from '../../../shared/loadingIcon';
+  
 //Regras de validação
-const validationSchema = Yup.object().shape({
+export const validationSchema = Yup.object().shape({
   name: Yup.string()
     .label('Name')
     .required('Nome é obrigatório')
@@ -24,99 +28,100 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .label('Password')
     .required('Este campo é obrigatório')
-    .min(6, 'A senha deve ter pelo menos 6 caracteres'),
+    .min(6, 'A senha deve ter pelo menos 6 caracteres')
+    .max(10, 'A senha deve ter no máximo 10 caracteres'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'A confirmação deve coincidir com a senha')
     .required('A confirmação é obrigatória')
 })
+ 
+//Componente para signup com email
+export const Signup = () => {
+  const dispatch = useDispatch()
+  const [checked, setChecked] = useState(false);
+  const [haveError, setHaveError] = useState(false);
+  const [messageError, setMessageError] = useState(null);
 
-const LoadingIndicator = (props) => (
-  <View style={[props.style, styles.indicator]}>
-    <Spinner size='small'/>
-  </View>
-);
+  const authState = useSelector(state => state.authState);
 
-// const getToken = async () => {
-//   token = await firebase.auth().currentUser.getIdToken().then(res => {
-//     return res
-//   })
-//   return await token
-// }
-
-// const loginApi = async () => {
-//   console.log('4  -------------------')
-//   token = await getToken()
-//   config = {
-//     headers: { Authorization: `Bearer ${token}` }
-//   }
-//   try{
-//       await api.get('/auth', config).then( response => { 
-//         let userData = response.data.user_data;
-//         // console.log(userData.address)
-//         saveData('@userData', userData)
-//     });
-//   }catch ( error ) {
-//     console.log(error.message)
-//   }
-// }
-
-// const registerApi = async (email, name, uid) => {
-//   // console.log('3 ' + email + ' ' + name + ' ' + uid)
-//   token = await getToken()
-//   body = {
-//       email: email,
-//       name: name,
-//       firebase_uid: uid
-//   }
-//   config = {
-//     headers: { Authorization: `Bearer ${token}` }
-//   }
-//   data = {
-//     email: email,
-//     name: name,
-//     firebase_uid: uid
-//   }
-
-//   // console.log('Header ' + config)
-//   // console.log('Data ' + data)
+  const MailIcon = (props) => (
+    <Icon {...props} name='email'/>
+  );
   
-//   try{
-//       await api.post('/register', data, config)
-//   }catch ( error ) {
-//     console.log(error.message)
-//   }
-// }
-
-//Componente para login/signup com email
-export const Signup = props => {
-  const [checked, setChecked] = React.useState(false);
-  const [haveError, setHaveError] = React.useState(false);
+  const PersonIcon = (props) => (
+    <Icon {...props} name='person'/>
+  );
   
+  //Hide text do password
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
+
+  const togglePasswordSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderPasswordIcon = (props) => (
+    <TouchableWithoutFeedback onPress={togglePasswordSecureEntry}>
+      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'}/>
+    </TouchableWithoutFeedback>
+  );
+
+  //Hide text do confirm password
+  const [secureConfirmTextEntry, setSecureConfirmTextEntry] = React.useState(true);
+
+  const toggleConfirmSecureEntry = () => {
+    setSecureConfirmTextEntry(!secureConfirmTextEntry);
+  };
+
+  const renderConfirmIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleConfirmSecureEntry}>
+      <Icon {...props} name={secureConfirmTextEntry ? 'eye-off' : 'eye'}/>
+    </TouchableWithoutFeedback>
+  );
+
   const onCheckedChange = (isChecked) => {
     setChecked(isChecked);
   };
+
   const signup = async (email, name, password) => {
-    
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(res => {
-      
-        registerApi(email, name, res.user.uid).then(response => {
-          loginApi()
+    dispatch(signUpStart('EMAIL'))
+    //Iniciando Signup No Firebase
+    auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then( res => {
+      //Iniciando Signup Na API
+      registerApi(email, name, res.user.uid, authState.referedBy).then(()=> {
+        dispatch(signUpSuccess())
+        //Iniciando Login na API
+        dispatch(loginStart('EMAIL'))
+
+        loginApi().then( response => {
+          dispatch(loginSuccess())
+          dispatch(setUser(response))
+          return response;
+        }).catch(error => {
+          dispatch(loginFailure(error.message))
+  
         })
- 
-        return res
+        //Final login API
+      }).catch(error => {
+        dispatch(signUpFailure(error.message))
+        console.log('ERRO DE SIGNUP ' + error.message)
+        
       })
-      .catch(error => {
-        console.log(error);
-        if(error.message == 'The email address is already in use by another account.'){
-          setHaveError(true)
-        }
-      });
-  };
+
+      //Final Signup na API
+  
+    })
+    .catch(error => {
+      console.log(error.message);
+      dispatch(signUpFailure(error.message))
+      setHaveError(true)
+      setMessageError(error.message)
+    });
+  }; 
+  
   return (
-    <SafeAreaView style={styles.container}>
+    <Fragment>
       <Formik
         initialValues={{
           name: '',
@@ -124,17 +129,20 @@ export const Signup = props => {
           password: '',
           confirmPassword: ''
         }}
-        onSubmit={values => {
+        onSubmit={(values, {setSubmitting, resetForm})=> {
           const { name, email, password } = values;
-          
-          signup(email, name, password) 
+          signup(email, name, password).then( () => {
+            resetForm({name: '', email: '', password: '', confirmPassword: ''})
+          })
+          setChecked(false)
+          setSubmitting(false);
         }}
         validationSchema={validationSchema}>
         {({
           handleChange,
           values,
           handleSubmit,
-          errors,
+          errors, 
           isValid,
           touched,
           handleBlur,
@@ -147,10 +155,10 @@ export const Signup = props => {
               onChangeText={handleChange('name')}
               placeholder='Nome'
               onBlur={handleBlur('name')}
-              autoFocus
+              caption={ () => <ErrorMessage errorValue={touched.name && errors.name}/> }
+              accessoryRight ={ PersonIcon}
+              style = {styles.input}
             />
-            <ErrorMessage errorValue={touched.name && errors.name} />
-            
             <Input
               name='email'
               value={values.email}
@@ -158,80 +166,72 @@ export const Signup = props => {
               placeholder='Email'
               autoCapitalize='none'
               onBlur={handleBlur('email')}
+              caption={ () => <ErrorMessage errorValue={touched.email && errors.email}/>} 
+              accessoryRight={MailIcon}
+              style = {styles.input}
             />
-            <ErrorMessage errorValue={touched.email && errors.email} />
             <Input
               name='password'
               value={values.password}
               onChangeText={handleChange('password')}
               placeholder='Senha'
-              secureTextEntry
+              accessoryRight={renderPasswordIcon}
+              secureTextEntry={secureTextEntry}
               onBlur={handleBlur('password')}
+              caption={ () => <ErrorMessage errorValue={touched.password && errors.password} />} 
+              style = {styles.input}
             />
-            
-            <ErrorMessage errorValue={touched.password && errors.password} />
-          
             <Input
               name='password'
               value={values.confirmPassword}
               onChangeText={handleChange('confirmPassword')}
               placeholder='Confirmação de senha'
-              secureTextEntry
+              accessoryRight={renderConfirmIcon}
+              secureTextEntry={secureConfirmTextEntry}
               onBlur={handleBlur('confirmPassword')}
+              style = {styles.input}
             />
-            <ErrorMessage
-              errorValue={touched.confirmPassword && errors.confirmPassword}
-            />
+            <ErrorMessage visible = {touched.confirmPassword} errorValue={errors.confirmPassword}/>
             <Layout style = {styles.section} >
               <CheckBox
-                // style = {styles.checkBox}
                 checked={checked}
                 status='success'
                 onChange={onCheckedChange}
               >
-                
+                <Text category='c1' status='control'>Concordo com os termos e condições</Text> 
               </CheckBox>
-              <Text category='c1' status='control'>Concordo com os termos e condições</Text>
             </Layout>
-            <Layout style = {styles.buttonRow} >
-            <ErrorMessage status = {'auth'}  errorValue={haveError && 'Esta credencial já pertence à alguma conta cadastrada'} />
+            <Layout style = {styles.buttonRow}>
+              { haveError && 
+                <ErrorMessage status = {'auth'}  errorValue={messageError} />
+              }
               <Button 
                 onPress={handleSubmit} 
                 status='success'
                 disabled={ isSubmitting || !isValid || !checked}
-                // accessoryLeft={LoadingIndicator}
+                accessoryLeft={ isSubmitting && LoadingIndicator  }
                 >Cadastro</Button>
-            </Layout>
+              </Layout>
           </Fragment>
         )}
-      </Formik>
-    </SafeAreaView>
+        </Formik>
+    </Fragment>
   );
 };
 
 const styles = StyleSheet.create({  
   section: {
-    // paddingTop: 8,
     width: '100%',
+    marginTop: 16,
+    marginBottom: 24,
     backgroundColor: 'transparent',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
   },
   input:{
-    paddingTop: 8,
+    marginBottom: 16,
   },
   buttonRow:{
-    paddingTop: 32,
     backgroundColor: 'transparent',
+    width: '100%',
+    paddingVertical: 24,
   },
-  // checkBox:{
-  //   paddingTop: 8,
-  // },
-  container:{
-    width: '100%'
-  }
 });
