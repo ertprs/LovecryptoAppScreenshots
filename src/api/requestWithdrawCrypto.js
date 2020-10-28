@@ -8,15 +8,10 @@ export const resquestWithrawCrypto = async (address, amount) => {
       headers: { Authorization: `Bearer ${token}` }
     }
 
-    let data = { "destination_address": address, "amount": amount }
-    console.log('CONFIG ' + (config))
-    console.log('DATA ' + JSON.stringify(data))
+    data = { "destination_address": address, "amount": amount }
     
-    try{
-      await api.post('/transactions/transfer', data, config).then( response => {
-      return response
-    });
-    }catch ( error ) {
-      return error
-    }
+    console.log('DATA enviado ' + JSON.stringify(data))
+
+    return await api.post('/transactions/transfer', data, config)
+    
   }

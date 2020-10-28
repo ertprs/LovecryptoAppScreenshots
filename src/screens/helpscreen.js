@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, }  from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, StatusBar }  from 'react-native';
 import { Icon, Text, TopNavigation, TopNavigationAction, Layout } from '@ui-kitten/components';
 
 import { FAQ } from '../components/faq'
@@ -18,6 +18,7 @@ export const HelpScreen = (props) => {
             flex: 1,
             backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
             }}>
+                <StatusBar barStyle="dark-content" />
             <TopNavigationHeader navigation = {props.navigation}  title = 'Ajuda'/>
            
             <Layout style = {{ flex: 1,   padding: 16, textAlign: 'center' }}>

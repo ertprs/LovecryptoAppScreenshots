@@ -17,6 +17,7 @@ export const FaqScreen = (props) => {
             flex: 1,
             backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
             }}>
+                <StatusBar barStyle="dark-content" />
             <TopNavigationHeader navigation = {props.navigation}  title = 'FAQ'/>
             <ScrollView>
                 <FAQ/>

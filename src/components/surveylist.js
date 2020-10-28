@@ -9,14 +9,15 @@ import {
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyleSheet, TouchableNativeFeedback, ImageBackground} from 'react-native';
-import { taskEvent } from '../shared/analyticsLog'
+
 //Importações Internas
 import { Alert } from './alert';
-import { Loading } from './loading';
 import { NoRegister } from './noregister';
 import { getTasks } from '../api/getTasks';
-import { LoadingSurveyList } from './loadingSurveyList'
-import { multiplier } from '../shared/constants'
+import { taskEvent } from '../shared/analyticsLog';
+import { LoadingSurveyList } from './loadingSurveyList';
+import { multiplier } from '../shared/constants';
+
 const ArrowIcon = (props) => (
     <Icon {...props} fill = 'white' name='arrow-forward-outline'/>
 );
@@ -42,9 +43,8 @@ export const  SurveyList = (props) => {
         getTasks().then(response => {
             setTasks(response)
             setLoading(false)
-            console.log(JSON.stringify(response))
         })
-      }, [user.points, user.balance]);  
+    }, [user.points, user.balance]);  
    
     const renderItem = ({ item, index }) => (
         <ImageBackground source={item.campaign.cover != null ? { uri: item.campaign.cover } : require('../assets/images/task_cover.jpg')} style={styles.image}>
@@ -61,7 +61,7 @@ export const  SurveyList = (props) => {
                             style = {styles.info}
                             size = 'tiny'
                             status='info'>
-                            {item.qtd_questions} perguntas
+                            {item.qtd_questions + ' pergunta' + (item.qtd_questions > 1 ? 's' : '')}
                         </Button>
                         { item.points != null &&
                         <Button
@@ -76,7 +76,7 @@ export const  SurveyList = (props) => {
                                 style = {styles.info}
                                 size = 'tiny'
                                 status='success'>
-                                {Number(item.reward / multiplier)} cUSD
+                                {Number(item.reward / multiplier).toFixed(2)} cUSD
                             </Button>
                         }
                     </Layout>
@@ -92,7 +92,7 @@ export const  SurveyList = (props) => {
     );
     
     return (
-        <Layout level = '2' style={{flex: 1, paddingHorizontal: 16, paddingVertical: 8,}}>
+        <Layout level = '2' style={{flex: 1, paddingHorizontal: 16, paddingVertical: 8, minHeight: 400}}>
             <Alert/>
             <List
                 data={ tasks }

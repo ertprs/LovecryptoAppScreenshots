@@ -62,7 +62,7 @@ export const ChangePassword = props  => {
 
   return (
     <Layout style={{width: '100%'}}>
-      <Text style = {{marginBottom: 32, textAlign: 'center'}}>Insira a nova senha</Text>
+      
       <Formik
         initialValues={{
           password: '',
@@ -96,7 +96,9 @@ export const ChangePassword = props  => {
               secureTextEntry={secureTextEntry}
               onBlur={handleBlur('password')}
               caption={ () => <ErrorMessage errorValue={touched.password && errors.password}
+
               />} 
+              style = {styles.input}
             />
             <Input
               name='password'
@@ -107,7 +109,8 @@ export const ChangePassword = props  => {
               secureTextEntry={secureConfirmTextEntry}
               onBlur={handleBlur('confirmPassword')}
               caption={ () => <ErrorMessage  errorValue={touched.confirmPassword && errors.confirmPassword}
-              style = {styles.input} />} 
+               />} 
+               style = {styles.input}
             />
             <Layout style = {styles.buttonRow} >
               <Button 
@@ -126,7 +129,7 @@ export const ChangePassword = props  => {
 
 const styles = StyleSheet.create({  
   input:{
-    marginTop: 8,
+    marginTop: 16,
   },
   buttonRow:{
     marginTop: 48,

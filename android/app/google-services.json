@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "522049972574",
+    "firebase_url": "https://lovecrypto-prod.firebaseio.com",
+    "project_id": "lovecrypto-prod",
+    "storage_bucket": "lovecrypto-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522049972574:android:af63ea56345844e0f0c7cf",
+        "android_client_info": {
+          "package_name": "br.com.lovecrypto.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522049972574-klr4b6lg370clval7megk8m4pv8u82fp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.lovecrypto.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "522049972574-s92hket1tf4i2ktmk4ivf1rgq30brrr6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.lovecrypto.app",
+            "certificate_hash": "8bda2712be1a45e6a38c7a3138a7ecb68a1a9afa"
+          }
+        },
+        {
+          "client_id": "522049972574-tqs5s4ojohopa6jfnh20htcsun5dp04s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.lovecrypto.app",
+            "certificate_hash": "1e2f1d221ccf7f50e088bce3437f9ffd3b81f8ba"
+          }
+        },
+        {
+          "client_id": "522049972574-5ihc6of012bi4330eqhrtl6552irea2t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3oVffG_z0JkW5JEbXROg6CWCZIumjwMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522049972574-5ihc6of012bi4330eqhrtl6552irea2t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "522049972574-mgt0ulmo0b3uc7h1nqq1cvqglr4bc2l0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.lovecrypto.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

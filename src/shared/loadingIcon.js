@@ -4,6 +4,6 @@ import { View } from 'react-native'
 
 export const LoadingIndicator = (props) => (
     <View style={props.style}>
-        <Spinner size='small'/>
+        <Spinner size='small' status='control'/>
     </View>
 );

@@ -1,10 +1,24 @@
+//Importações Externas
 import React from 'react';
-import { Text, useTheme, Layout } from '@ui-kitten/components';
+import { useTheme, Layout } from '@ui-kitten/components';
 import { SafeAreaView, ScrollView, StyleSheet,}  from 'react-native';
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
 
-import {ThemeContext} from '../../theme-context'; 
-import { TopNavigationHeader } from '../shared/topNavigation';
+//Importações Internas
+import { ThemeContext } from '../../theme-context'; 
+import { HeroHeader } from '../components/heroHeader';
 import { ChangePassword } from '../components/changePassword';
+import { TopNavigationHeader } from '../shared/topNavigation';
+import { generalStyle } from '../shared/generalStyle';
+import { CustomHeader } from '../shared/customHeader';
+
+const renderContent = () => {
+    return (
+        <Layout style = { styles.card}>
+                <ChangePassword/>
+        </Layout>
+    )
+}
 
 export const ChangePasswordScreen = (props) => {
 
@@ -18,38 +32,37 @@ export const ChangePasswordScreen = (props) => {
             flex: 1,
             backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
             }}>
-            <TopNavigationHeader navigation = {props.navigation}  title = 'Configurações' subtitle = 'alterar senha'/>
+            {/* <TopNavigationHeader navigation = {props.navigation}  title = 'Configurações' subtitle = 'alterar senha'/>
             <ScrollView>
-            <Layout style = {{width: '100%', height: 250, backgroundColor: theme['color-primary-default'], justifyContent: 'center', alignItems: 'center',}}>
+            <HeroHeader title = 'Alterar Senha' subtitle = 'Insira sua nova senha'/>
+            <Layout style = { styles.card}>
+                <ChangePassword/>
             </Layout>
-            <Layout style = {{ top: -200, marginBottom: -200, backgroundColor: 'transparent'}}>
-                <Text  style = {{  left:  16}} status  = 'control' category = 'h4'>Alterar Senha</Text>
-                <Layout style = { styles.card}>
-                   <ChangePassword/>
-                </Layout>
-            </Layout>
-            </ScrollView>
+            </ScrollView> */}
+            <ReactNativeParallaxHeader
+                headerMinHeight={56}
+                headerMaxHeight={220}
+                extraScrollHeight={20}
+                navbarColor= {theme['color-primary-default']}
+                backgroundImage={require('../assets/images/forgot_password.jpg')}
+                renderNavBar={() => <CustomHeader navigation = {props.navigation} title = {'Editar Senha'}/>}
+                renderContent={renderContent}
+            />
         </SafeAreaView>
     )
 };
- 
-
-
+  
 const styles = StyleSheet.create({
     card: {
-        shadowColor: "#000", 
-        shadowOffset: {	width: 0,	height: 7,},
-        shadowOpacity: 0.41,
-        shadowRadius: 9.11,
-        elevation: 14, 
         flexDirection: 'row',
-        padding: 32, 
-        margin: 16,
+        padding: 24, 
         borderRadius: 10, 
         justifyContent: 'space-around',
         alignItems: 'center',
-      },
-    input: {
-        marginTop: 8
+        top: -10,
+        marginBottom: -10,
+    },
+    input:{
+        marginTop: 16,
     }
   });

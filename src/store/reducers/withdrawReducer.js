@@ -10,17 +10,14 @@ import {
   const initialState = {
     cryptoWallet: {
         id: null,
-        hash: null,
+        address: null,
     },
     fiatWallet: {
-        id: null,
-        agency: null,
-        account: null
+        phone: null,
         },
     fiatTransference: {
         CPF: null,
-        agency: null,
-        account: null,
+        phone: null,
         ammount: null,
         },
     cryptoTransference: {
@@ -40,7 +37,9 @@ import {
         case SET_FIAT_WALLET:
             return {
                 ...state,
-                fiatWallet: action.payload,
+                fiatWallet: {
+                    phone: action.payload
+                },
             };
         case SET_FIAT_TRANSFERENCE:
             return {

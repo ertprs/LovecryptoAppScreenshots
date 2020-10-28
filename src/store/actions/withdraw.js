@@ -21,21 +21,16 @@ export const setCryptoWallet = (id, address) => ({
         },
 });
 
-export const setFiatWallet = (id, agency, account) => ({
+export const setFiatWallet = (phone) => ({
     type: SET_FIAT_WALLET,
-    payload: {
-        id: id,
-        agency: agency,
-        account: account
-        },
+    payload: phone
 });
  
-export const setFiatTransference = (CPF, agency, account, amount) => ({
+export const setFiatTransference = (CPF, phone, amount) => ({
     type: SET_FIAT_TRANSFERENCE,
     payload: {
         CPF: CPF,
-        agency: agency,
-        account: account,
+        phone: phone,
         ammount: amount,
         }
 });

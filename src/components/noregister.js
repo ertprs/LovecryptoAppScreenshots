@@ -1,4 +1,5 @@
 
+//Importações Externas
 import React from "react";
 import { StyleSheet, Image } from "react-native";
 import { Layout, Text} from '@ui-kitten/components';
@@ -7,7 +8,7 @@ import { Layout, Text} from '@ui-kitten/components';
 export const NoRegister = (props) => {
     const { type } = props;
     return (
-        <Layout style={styles.containerImage}>
+        <Layout level = '2' style={styles.containerImage}>
             <Text category='h3' status='danger'>Ops...</Text>
             { type == 'tasks' 
                 ? <Text category='h6'>Sem novas tarefas por enquanto</Text>    

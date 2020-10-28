@@ -6,18 +6,18 @@ export const registerApi = async(email, name, uid, code) => {
   config = {
     headers: { Authorization: `Bearer ${token}` }
   }
-  let data = {
+  data = {
     email: email,
     name: name,
     firebase_uid: uid,
     recommended_by: code
   } 
-  try{
-      await api.post('/register', data, config)
-      console.log('Sucesso ao cadastrar na api')
-      auth().currentUser.sendEmailVerification()
-  }catch ( error ) {
-    console.log('Signup api error: ' + error.message)
-    return error
-  }
+  return await api.post('/register', data, config)
+  // try{
+  //     await api.post('/register', data, config)
+  //     console.log('Sucesso ao cadastrar na api')
+  //     auth().currentUser.sendEmailVerification()
+  // }catch ( error ) {
+  //   console.log('Signup api error: ' + error.message)
+  // }
 }

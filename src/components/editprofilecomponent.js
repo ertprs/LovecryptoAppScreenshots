@@ -19,6 +19,7 @@ import ErrorMessage from './errormenssage';
 import { editProfile } from '../api/editProfile';
 import { LoadingIndicator } from '../shared/loadingIcon';
 import { updateUserCPF, updateUserPhone, updateUserAddress } from '../store/actions/user'
+import { showToast } from '../shared/showToast';
 
 
 const dateService = new MomentDateService();
@@ -83,10 +84,12 @@ export const EditProfileComponent = (props) => {
  
           editProfile(values.name, [], values.phone, '', null, values.cpf, address).then( () => {
             setSubmitting(false);
+            showToast('Perfil editado com sucesso')
             dispatch(updateUserAddress(address))
             dispatch(updateUserCPF(values.cpf))
             dispatch(updateUserPhone(values.phone))
             resetForm({name: values.name, cpf: user.cpf, email: user.email, phone: user.phone, city: user.address.city})
+            
           })
         }}
         validationSchema={validationSchema}>

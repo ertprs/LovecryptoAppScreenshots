@@ -10,10 +10,11 @@ export const HeaderTitle = ({title}) => {
         </Layout>
     );
 }
+
 const styles = StyleSheet.create({
     header: {
         padding: 12,
         paddingLeft: 20,
-        
+        paddingTop: 20, 
     },
 })

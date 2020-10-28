@@ -1,11 +1,13 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, ImageBackground, StatusBar} from 'react-native';
-import { Text, Layout, Icon, Card, Modal, useTheme, Button } from '@ui-kitten/components';
-import { TopNavigationHeader } from '../shared/topNavigation';
+//Importações Externas
+import React, { Fragment } from 'react';
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
+import { SafeAreaView, Platform, StatusBar } from 'react-native';
+import { Layout, useTheme, Text } from '@ui-kitten/components';
+ 
+//Importações Internas
 import { ThemeContext } from '../../theme-context'; 
 import { generalStyle } from '../shared/generalStyle';
-import { SectionBanner } from '../components/sectionbanner'
-
+import { CustomHeader } from '../shared/customHeader';
 export const PrivacyPolicyScreen = ( props ) => {
 
   const themeContext = React.useContext(ThemeContext);
@@ -16,20 +18,9 @@ export const PrivacyPolicyScreen = ( props ) => {
     navigation.navigate('Details');
   };
 
-  return (
-    <SafeAreaView
-      style={{
-      flex: 1,
-      backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
-      }}>
-      <TopNavigationHeader navigation = {props.navigation}  title = 'Politica de privacidade'/>
-        <ScrollView>   
-          {/* <Layout style = {{height: 150, width: '100%', backgroundColor: theme['color-primary-default'] }}>
-          </Layout> */}
-          <SectionBanner type = 'privacy'/>
-          {/* <ImageBackground source={require('../assets/images/privacy_bg.jpg')} style={generalStyle.sectionBanner}/> */}
-          {/* <ImageBackground source={require('../assets/images/privacy_bg.jpg')} style={generalStyle.sectionBanner}/> */}
-          <Layout style={{justifyContent: 'center', alignItems: 'center', padding: 32,}}>
+  const renderContent = () => {
+    return (
+      <Layout style={{justifyContent: 'center', alignItems: 'center', padding: 32,}}>
             <Text style = {generalStyle.paragraph}>
               Lovecrypto Inc. criou o aplicativo Lovecrypto como um aplicativo gratuito. Este SERVIÇO é fornecido pela Lovecrypto Inc. sem custo e destina-se ao uso como está.
             </Text>
@@ -121,7 +112,30 @@ export const PrivacyPolicyScreen = ( props ) => {
               Se você tiver alguma dúvida ou sugestão sobre nossa Política de Privacidade, não hesite em nos contactar em hi@lovecrypto.net
             </Text>
           </Layout>
-      </ScrollView>
-  </SafeAreaView>
+    );
+  };
+
+  return (
+    <Fragment>
+      { Platform.OS == 'ios' &&
+      <SafeAreaView style={{ flex: 0, backgroundColor: theme['color-primary-500']} }/>
+      }
+      <SafeAreaView
+        style={{
+        flex: 1,
+        backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
+        }}>
+          <StatusBar barStyle="light-content" />
+          <ReactNativeParallaxHeader
+            headerMinHeight={56}
+            headerMaxHeight={220}
+            extraScrollHeight={20}
+            navbarColor= {theme['color-primary-default']}
+            backgroundImage={require('../assets/images/privacy_bg.jpg')}
+            renderNavBar={() => <CustomHeader navigation = {props.navigation} title = {'Politica de Privacidade'} subtitle = {'teddf'}/>}
+            renderContent={renderContent}
+          />
+      </SafeAreaView>
+    </Fragment>
   );
 };

@@ -1,7 +1,10 @@
+//Importações Externas
+import auth from '@react-native-firebase/auth';
 import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, TouchableNativeFeedback} from "react-native";
 import { Layout, Icon, Text, useTheme, Button} from '@ui-kitten/components'
-import auth from '@react-native-firebase/auth';
+ 
+//Importações Internas
 import { showToast } from '../shared/showToast';
 import { getData } from '../memoryAccess/getData';
 

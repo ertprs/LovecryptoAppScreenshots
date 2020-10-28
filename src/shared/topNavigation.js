@@ -48,19 +48,20 @@ export const TopNavigationHeader = (props) => {
   );
 
   const renderBackAction = () => (
-    <TopNavigationAction icon={BackIcon} onPress = {() => props.navigation.goBack()}/>
+    <TopNavigationAction appearance = 'default' icon={BackIcon} onPress = {() => props.navigation.goBack()}/>
   );
 
   return (
-    <Layout style={styles.container} level='1'>
+    // <Layout style={styles.container} level='1'>
       <TopNavigation
         alignment='center'
         title= {props.title}
         subtitle= {props.subtitle}
         accessoryLeft={renderBackAction}
+        
         // accessoryRight={renderRightActions}
       />
-    </Layout>
+    // </Layout>
   );
 };
 

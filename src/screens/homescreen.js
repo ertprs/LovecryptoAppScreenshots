@@ -1,8 +1,9 @@
 //Importações Externas
-import React from 'react';
-import {StatusBar } from 'react-native';
+import React, {Fragment} from 'react';
+import { StatusBar, Platform } from 'react-native';
 import { useTheme } from '@ui-kitten/components';
-import { ScrollView } from 'react-native-gesture-handler';
+ 
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
 
 //Importações Internas
 import { ThemeContext } from '../../theme-context';
@@ -12,28 +13,42 @@ import { HeaderTitle } from '../components/headertitle';
 import { HeaderWallet } from '../components/headerwallet';
 import { LovecryptoLogoHeader } from '../components/lovecryptoLogoHeader';
  
+
+
 export const Homescreen = (props) => {
   
   const themeContext = React.useContext(ThemeContext);
   const currentTheme = themeContext.theme;
   const theme = useTheme();
  
-  return (
-    <SafeAreaView
-      style={{
-      flex: 1,
-      backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
-      }}>
-      <StatusBar
-      barStyle={'light-content'}
-      backgroundColor={currentTheme === 'light' ?  theme['color-primary-default'] : '#222B45'}
-      />
-      <ScrollView>
-        <LovecryptoLogoHeader navigation = {props.navigation}/>
-        <HeaderWallet navigation = {props.navigation}/>
+  const renderContent = () => {
+    return(
+      <Fragment>
         <HeaderTitle title = 'Tarefas'/>
         <SurveyList navigation = {props.navigation}/>
-      </ScrollView>
-    </SafeAreaView>
+      </Fragment>
+    )
+  }
+
+  return (
+    <Fragment>
+      { Platform.OS == 'ios' &&
+      <SafeAreaView style={{ flex: 0, backgroundColor: theme['color-primary-500']} }/>
+      }
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'blue' }}>
+        <StatusBar barStyle="light-content" />
+        <ReactNativeParallaxHeader
+          headerMinHeight={70}
+          headerMaxHeight={250}
+          extraScrollHeight={50}
+          alwaysShowTitle={false}
+          navbarColor= {theme['color-primary-500']}
+          backgroundColor = {theme['color-primary-500']}
+          title = { <HeaderWallet navigation = {props.navigation}/>}
+          renderNavBar={ () =>   <LovecryptoLogoHeader navigation = {props.navigation}/>}
+          renderContent={renderContent}
+        />
+      </SafeAreaView>
+    </Fragment>
   );
 };

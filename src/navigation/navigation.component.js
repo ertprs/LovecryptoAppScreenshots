@@ -171,7 +171,7 @@ const WithdrawNavigator = () => (
     <Withdraw.Screen name="Linkedaccounts" component={ LinkedAccountsScreen } />
     <Withdraw.Screen name="Requestwithdraw" component={ RequestWithDrawScreen } />
     <Withdraw.Screen name="Addaccount" component={ AddAccountScreen } />
-    <Withdraw.Screen name="Confirmwithdraw" component={ ConfirmWithdrawScreen } />
+    <Withdraw.Screen name="Confirmwithdraw" options={{ gestureEnabled: false,}} component={ ConfirmWithdrawScreen } />
   </Withdraw.Navigator>
 );
   

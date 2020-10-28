@@ -16,6 +16,7 @@ export const SettingsScreen = (props) => {
   const themeContext = React.useContext(ThemeContext);
   const currentTheme = themeContext.theme;
   
+ 
   const dispatch = useDispatch();
   const state = useSelector(state => state);
 
@@ -37,7 +38,7 @@ export const SettingsScreen = (props) => {
     <Toggle
       checked={state.configState.darkMode}
       onChange={darkToggle}
-      // disabled={true} 
+      disabled={true} 
     />
   );
 
@@ -67,6 +68,7 @@ export const SettingsScreen = (props) => {
       flex: 1,
       backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
       }}>
+      <StatusBar barStyle="dark-content" />
       <TopNavigationHeader navigation = {props.navigation}  title = 'Configurações'/>
       <ScrollView>
         <Layout style = {{ flex: 1,}}>
@@ -75,11 +77,11 @@ export const SettingsScreen = (props) => {
           <ListItem title={"Email"} accessoryRight = {renderItemAccessoryEmail}/> 
           <Divider/>
           <Subtitle title = 'Opções de linguagem' icon = 'globe-outline'/>
-          <ListItem title={"Moeda"} accessoryRight = {() => <Text appearance='hint'>{config.currency}</Text>} onPress = { () => showToast('Opção indisponível')}/>
-          <ListItem title={"Lingua"} accessoryRight = {() => <Text appearance='hint'>{config.language}</Text>} onPress = { () => showToast('Opção indisponível')}/>
+          <ListItem title={"Moeda"} accessoryRight = {() => <Text appearance='hint'>{state.configState.currency}</Text>} onPress = { () => showToast('Opção indisponível')}/>
+          <ListItem title={"Lingua"} accessoryRight = {() => <Text appearance='hint'>{state.configState.language}</Text>} onPress = { () => showToast('Opção indisponível')}/>
           <Divider/>
           <Subtitle title = 'Visual' icon = 'sun'/>
-          <ListItem title={"Dark Mode"} accessoryRight = {renderItemAccessoryDarkMode}/>  
+          <ListItem title={"Dark Mode"} accessoryRight = {renderItemAccessoryDarkMode} onPress = { () => showToast('Opção indisponível')}/>  
           <Divider/>
           { state.authState.provider == 'EMAIL' &&
           <Subtitle title = 'Segurança' icon = 'lock-outline'/> 

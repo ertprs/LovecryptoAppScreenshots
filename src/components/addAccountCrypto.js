@@ -2,34 +2,33 @@
 import * as Yup from 'yup';
 import { Formik } from "formik";
 import React, { Fragment }  from "react";
-import { Button, Input, Layout, Text } from '@ui-kitten/components';
 import { useSelector, useDispatch } from 'react-redux';
+import { Button, Input, Layout, Text } from '@ui-kitten/components';
 
 //Importações Internas
 import ErrorMessage from './errormenssage';
+import { showToast } from '../shared/showToast';
 import { TooltipInfo } from '../shared/tooltipInfo';
-import { saveData } from '../memoryAccess/saveData';
 import { clickInfoEvent } from '../shared/analyticsLog';
 import { LoadingIndicator } from '../shared/loadingIcon';
 import { setCryptoWallet } from '../store/actions/withdraw';
 
+
 const renderHashIcon = (props) => (
-  <TooltipInfo {...props} text = 'O hash é o identificador da carteira de destino' onPress = { () =>  clickInfoEvent('hash', 'AddCrypto')} />
+  <TooltipInfo {...props} text = 'O endereço é o identificador da carteira de destino' onPress = { () =>  clickInfoEvent('hash', 'AddCrypto')} />
 );
 
 //Regras de validação
 const validationSchema = Yup.object().shape({
   hash: Yup.string()
-    // .label('hash')
-    // .required('Este campo deve ser preenchido')
-    // .min(6, 'A senha deve ter pelo 6 caracteres ')
-    .matches('^0x[a-fA-F0-9]{40}$', 'O formato da chave está errado'),
+    .matches('^0x[a-fA-F0-9]{40}$', 'O formato do endereço está errado'),
 })
 
 //Componente para login/signup com email
 export const AddAccountCrypto = (props) => {
 
   const dispatch = useDispatch();
+
   const wallet = useSelector(state => state.withdrawState);
 
   const saveCryptoAccount = async (id, hash) => {
@@ -39,7 +38,7 @@ export const AddAccountCrypto = (props) => {
   return (
     <Layout style={{flex: 1}}>
       <Layout style = {{flexDirection: 'row', alignItems: 'center'}}>
-        <Text category='s1' style = {{marginBottom: 32, fontWeight: 'bold'}}>Insira o hash da carteira para qual deseja enviar</Text>
+        <Text category='s1' style = {{marginBottom: 32,}}>Insira o endereço da carteira Celo para qual deseja enviar</Text>
       </Layout>
       <Formik
         initialValues={{
@@ -47,11 +46,11 @@ export const AddAccountCrypto = (props) => {
         }}
         onSubmit={(values, {setSubmitting, resetForm}) => {
           const { hash } = values;
-          saveCryptoAccount('Celo', hash).then( () => {
-            resetForm({hash: ''})
-            setSubmitting(false);
-            props.navigation.navigate('Requestwithdraw', {type: 'crypto'})
-          })
+          dispatch(setCryptoWallet( 'Celo Crypto Wallet', hash))
+          showToast('Carteira adicionada')
+          resetForm({hash: ''})
+          setSubmitting(false);
+          props.navigation.navigate('Requestwithdraw', {type: 'crypto'})
         }}
         validationSchema={validationSchema}>
         {({

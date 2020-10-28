@@ -40,7 +40,10 @@ export const LovecryptoLogoHeader = ({navigation}) => {
         <View style={{width: '100%', paddingVertical: 24, paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center', backgroundColor: theme['color-primary-default'], flexDirection: 'row' }} >
             <Image style = {{height:  22, width: 150 }} source = {require ('../assets/images/logo_white.png')}/>
             <Layout style = {{position: 'absolute', flexDirection: 'row', backgroundColor: 'transparent', right: 16}}>
-                <AvatarIcon navigation = { navigation } url = {user.photoUrl}/>
+             
+                    <AvatarIcon navigation = { navigation } url = {user.photoUrl}/>
+              
+               
                 <Popover
                 visible={visible}
                 anchor={renderPasswordIcon}

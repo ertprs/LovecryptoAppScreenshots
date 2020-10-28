@@ -7,11 +7,9 @@ const BackIcon = (props) => (
 );
 
 export const DetailsScreen = ({ navigation }) => {
-
   const navigateBack = () => {
     navigation.goBack();
   };
-
   const BackAction = () => (
     <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
   );

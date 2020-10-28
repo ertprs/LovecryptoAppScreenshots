@@ -1,10 +1,9 @@
 //Importações Externas
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Button,} from '@ui-kitten/components';
 import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView, StyleSheet, ImageBackground, Image, Linking, StatusBar} from 'react-native';
-import { androidNavbar } from '../shared/constants'
+import { SafeAreaView, Platform, StyleSheet, ImageBackground, Image, Linking, StatusBar} from 'react-native';
+ 
 //Importações Internas
 import { clickInfoEvent } from '../shared/analyticsLog'
  
@@ -33,28 +32,29 @@ export const WelcomeScreen = ({navigation}) => {
       style={{
       flex: 1,
       }}>
-            <StatusBar
-        barStyle={ 'light-content'}
-        backgroundColor={ '#7A05C8'}/>
-      <ImageBackground source={require('../assets/images/welcome_bg.png')} style={styles.backgroundImg}/>
-      <LinearGradient 
-        colors={['#7A05C8', '#7A05C800']}
-        style = {{
-        position: 'absolute',
-        top: 0,
-        width: '100%',
-        padding: 24,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}>
-        <Image  style={styles.logoImg} source={require('../assets/images/logo_white.png')} ></Image>
-        <Button  onPress={() => moreAbout()} status='control' appearance='ghost'>saiba mais</Button>
-      </LinearGradient>
-      <Layout style = {styles.buttonGroup}>
-        <Button style = {styles.button}  size='large' status='success' appearance='filled' onPress={() => signup()}>Cadastro</Button>
-        <Button style = {styles.button}  size='large' status='success' appearance='outline'onPress={() => login()} >Login</Button>
-        <Button style = {styles.button}  size='large' status='primary' appearance='ghost' onPress={() => openTerms()} >Termos de Uso</Button>
-      </Layout>
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={'#222B45'}/>
+        <ImageBackground source={require('../assets/images/welcome_bg.png')} style={styles.backgroundImg}/>
+          <LinearGradient 
+            colors={['#7A05C8', '#7A05C800']}
+            style = {{
+            position: 'absolute',
+             
+            width: '100%',
+            padding: 24,
+            flexDirection: 'row',
+            paddingTop: Platform.OS == 'ios' ? 56 : 24,
+            justifyContent: 'space-between'
+          }}>
+          <Image  style={styles.logoImg} source={require('../assets/images/logo_white.png')} ></Image>
+          <Button  onPress={() => moreAbout()} status='control' appearance='ghost'>saiba mais</Button>
+        </LinearGradient>
+        <Layout style = {styles.buttonGroup}>
+          <Button style = {styles.button}  size='large' status='success' appearance='filled' onPress={() => signup()}>Cadastro</Button>
+          <Button style = {styles.button}  size='large' status='success' appearance='outline'onPress={() => login()} >Login</Button>
+          <Button style = {styles.button}  size='large' status='primary' appearance='ghost' onPress={() => openTerms()} >Termos de Uso</Button>
+        </Layout>
     </SafeAreaView>
   )
 }

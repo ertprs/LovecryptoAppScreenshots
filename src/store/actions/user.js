@@ -7,6 +7,8 @@ import {
     ADD_USER_POINTS,
     ADD_USER_BALANCE,
     SET_USER_PHOTO,
+    SET_PHONE_VERIFIED,
+    SET_EMAIL_VERIFIED
 } from './'
  
 export const setUser = user => ({
@@ -46,6 +48,14 @@ export const addUserPoints = points => ({
 export const setUserPhoto = photoURL => ({
     type: SET_USER_PHOTO,
     payload: photoURL
+});
+
+export const setPhoneVerified = () => ({
+    type: SET_PHONE_VERIFIED,
+});
+
+export const setEmailVerified = () => ({
+    type: SET_EMAIL_VERIFIED,
 });
 
 

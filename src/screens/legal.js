@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableNativeFeedback } from "react-native";
+import { TouchableNativeFeedback, StatusBar } from "react-native";
 import { Layout, Icon, Text } from '@ui-kitten/components'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
@@ -30,6 +30,7 @@ export const LegalScreen = (props) => {
             flex: 1,
             backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
             }}>
+            <StatusBar barStyle="dark-content" />
             <TopNavigationHeader navigation = {props.navigation}  title = 'Legal'/>
             <ScrollView>
                 <Layout level = '1'  style = {{ flex: 1}}>

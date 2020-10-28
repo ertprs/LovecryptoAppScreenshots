@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleSheet, Image, View} from 'react-native'
 import { Layout, Text, useTheme, Spinner} from '@ui-kitten/components';
- 
-
-
+  
 //Serve como titulo de seção pelo app
 export const LovecryptoLogo = ({size}) => {
 

@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import firebase from '@react-native-firebase/app';
 import { useSelector, useDispatch } from 'react-redux';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { Layout, Text, Button, Icon } from '@ui-kitten/components';
@@ -25,15 +24,15 @@ const FacebookIcon = (props) => (
 export const SocialAuth = props => {
   
   useEffect(() => {
-    // PROD
-    // GoogleSignin.configure({
-    //   webClientId: '522049972574-5ihc6of012bi4330eqhrtl6552irea2t.apps.googleusercontent.com',
-    // });
-    
-    //DEV
+    //PROD
     GoogleSignin.configure({
-      webClientId: '940937104065-nos2p4h9o37hqq7l22m31r6ehsv1doj9.apps.googleusercontent.com',
+      webClientId: '522049972574-5ihc6of012bi4330eqhrtl6552irea2t.apps.googleusercontent.com',
     });
+
+    // //DEV
+    // GoogleSignin.configure({
+    //   webClientId: '940937104065-nos2p4h9o37hqq7l22m31r6ehsv1doj9.apps.googleusercontent.com',
+    // });
 }, []);
    
   const onPressFacebook = () => {
@@ -55,11 +54,12 @@ export const SocialAuth = props => {
                 .signInWithCredential(credential)
                 .then(result => {
                   var user = result.user;
+                  console.log('USER ==>' + user)
                   registerApi(user.email, user.displayName, user.uid, authData.referedBy).then( async () => {
                     loginApi().then( response => {
                       dispatch(loginSuccess())
                       dispatch(setUser(response))
-                      dispatch(setUserPhoto(user.photoURL))     
+                      dispatch(setUserPhoto(user.photoURL))
                     })
                   })
                 })
@@ -78,28 +78,43 @@ export const SocialAuth = props => {
 
   const onGoogleButtonPress = async () => {
     dispatch(loginStart('Google'))
+
     // Get the users ID token
     const { idToken } = await GoogleSignin.signIn();
-  
     // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
   
     // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential).then( result =>{
       var user = result.user;
-      registerApi(user.email, user.displayName, user.uid, authData.referedBy).then( async () => {
-        loginApi().then( response => {
-          console.log('USUARIO ============> ' + response)
+      registerApi(user.email, user.displayName, user.uid, authState.referedBy).then( async () => {
+        auth().currentUser.sendEmailVerification()
+        try{
+          const response = await loginApi()
+          var userAPI = response.data.user_data;
           dispatch(loginSuccess())
-          dispatch(setUser(response))
+          dispatch(setUser(userAPI))
           dispatch(setUserPhoto(user.photoURL))
-        }).catch(error => {
+        }catch ( error ) {
+          console.log('Login api error: ' + error.message)
+          dispatch(loginFailure(error.message))
+        }
+      }).catch( async error => {
+        if ( error == 'Error: Request failed with status code 400'){
+          try{
+            const response = await loginApi()
+            var userAPI = response.data.user_data;
+            dispatch(loginSuccess())
+            dispatch(setUser(userAPI))
+            dispatch(setUserPhoto(user.photoURL))
+          }catch ( error ) {
+            console.log('Login api error: ' + error.message)
+            dispatch(loginFailure(error.message))
+          }
+        }else{
           console.log("Tente novamente " + error);
-          dispatch(loginFailure(error))
-        });
-      }).catch(error => {
-        console.log("Tente novamente " + error);
-        dispatch(signUpFailure(error))
+          dispatch(signUpFailure(error))
+        }
       });
     }).catch(error => {
       console.log("Tente novamente " + error);
@@ -108,7 +123,7 @@ export const SocialAuth = props => {
   }
    
   const dispatch = useDispatch();
-  const authData = useSelector(state => state.authState);
+  const authState = useSelector(state => state.authState);
   
   return (
     <Layout style = {styles.container}>
@@ -128,6 +143,7 @@ export const SocialAuth = props => {
         </Layout>
       </Layout>
     </Layout>
+     
   );
 }
 

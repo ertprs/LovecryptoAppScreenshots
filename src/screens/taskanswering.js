@@ -48,7 +48,6 @@ const makeJsonInfo = (questions, description) =>{
       optText = questions[j].choices.split('@#')
       for (let i = 0; i < optText.length; i++) {
         options.push({optionText: optText[i]})
-        
       } 
       question = {
         questionType: 'SelectionGroup', 
@@ -109,17 +108,18 @@ export class TaskAnsweringScreen extends Component {
  
   async componentDidMount(){  
     await getTasksById(this.state.id).then(data => {
-      console.log(JSON.stringify(data))
+      console.log('TASK ' + JSON.stringify(data))
       this.setState({ 
         name: data.name,
-        points: data.points != null ? data.points  : 0,
-        reward: data.reward != null ? data.reward  : 0,
+        points: data.points != null ? data.points : 0,
+        reward: data.reward != null ? Number(data.reward) : 0,
         numberOfTasks: data.questions.length,
         urlImage: data.campaign.cover,
         data: makeJsonInfo(data.questions, data.description),
         isLoading: false,
       })
     })
+    console.log('RECOMPENJSA ' + Number(this.state.reward))
   }
  
   onSurveyFinished(answers) {
@@ -211,13 +211,15 @@ export class TaskAnsweringScreen extends Component {
     />
     );
   }
+
+  
  
   renderInfoText(infoText, name, points, reward, questionsNo) {
     return (
       <Layout style={styles.infoTextContainer}>
         <Text category='h4'> {name} </Text>
         <Layout style = {{display: 'flex', flexDirection: 'row'}}>
-        <Button size='tiny' style = {styles.infoButton} status = 'info'> {questionsNo} perguntas</Button>
+        <Button size='tiny' style = {styles.infoButton} status = 'info'> {questionsNo + ' pergunta' + (questionsNo > 1 ? 's' : '')}</Button>
           {points > 0 &&
             <Button size='tiny' style = {styles.infoButton} status = 'success'> {parseInt(points)} pontos</Button>
           }
@@ -232,45 +234,38 @@ export class TaskAnsweringScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView
-        style={{
-        flex: 1,
-        backgroundColor: '#9807F9'
-        }}>
-        <ScrollView>
-          <ImageBackground blurRadius={3} source={{ uri: this.state.urlImage }} style={styles.background}>
-            <Layout level = '2'  style = {styles.overlay}>
-              {this.state.isLoading && 
-                <LoadingSurvey/>
-              }
-              { !this.state.isLoading && this.state.data  &&
-                <Survey
-                  ref={(s) => { this.surveyRef = s; }}
-                  titleOfTask = { this.state.name}
-                  points = { this.state.points }
-                  reward = { this.state.reward }
-                  questionsNo = { this.state.numberOfTasks }
-                  survey={this.state.data}
-                  renderSelector={this.renderButton.bind(this)}
-                  containerStyle={styles.surveyContainer}
-                  selectionGroupContainerStyle={styles.selectionGroupContainer}
-                  navButtonContainerStyle={styles.ButtonContainer}
-                  renderPrevious={this.renderPreviousButton.bind(this)}
-                  renderNext={this.renderNextButton.bind(this)}
-                  renderFinished={this.renderFinishedButton.bind(this)}
-                  renderQuestionText={this.renderQuestionText}
-                  onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
-                  onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
-                  renderTextInput={this.renderTextBox}
-                  renderNumericInput={this.renderNumericInput}
-                  renderInfo={this.renderInfoText}
-                />
-              }  
-               
-            </Layout> 
-          </ImageBackground>  
-        </ScrollView>
-      </SafeAreaView>
+      <ImageBackground blurRadius={3} source={ this.state.urlImage != null ? require('../assets/images/success.png') :  this.state.urlImage == null ? require('../assets/images/success.png') : { uri: this.state.urlImage }} style={styles.background}>
+        <Layout level = '2'  style = {styles.overlay}>
+          <ScrollView>
+          {this.state.isLoading && 
+            <LoadingSurvey/>
+          }
+          { !this.state.isLoading && this.state.data  &&
+            <Survey
+              ref={(s) => { this.surveyRef = s; }}
+              titleOfTask = { this.state.name}
+              points = { this.state.points }
+              reward = { this.state.reward }
+              questionsNo = { this.state.numberOfTasks }
+              survey={this.state.data}
+              renderSelector={this.renderButton.bind(this)}
+              containerStyle={styles.surveyContainer}
+              selectionGroupContainerStyle={styles.selectionGroupContainer}
+              navButtonContainerStyle={styles.ButtonContainer}
+              renderPrevious={this.renderPreviousButton.bind(this)}
+              renderNext={this.renderNextButton.bind(this)}
+              renderFinished={this.renderFinishedButton.bind(this)}
+              renderQuestionText={this.renderQuestionText}
+              onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
+              onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
+              renderTextInput={this.renderTextBox}
+              renderNumericInput={this.renderNumericInput}
+              renderInfo={this.renderInfoText}
+            />
+          }  
+          </ScrollView>
+        </Layout> 
+      </ImageBackground>  
     );
   }
 }
@@ -278,10 +273,11 @@ export class TaskAnsweringScreen extends Component {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    minHeight: 800,
+    height: '100%',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    resizeMode: 'cover',
   },
   overlay:{
     position: 'absolute',
@@ -307,8 +303,8 @@ const styles = StyleSheet.create({
   ButtonContainer:{
     flexDirection: 'row', 
     justifyContent: 'space-between',
-    padding: 16,
-    paddingTop:32,
+    padding: 24,
+    paddingTop:48,
   },
   selectionGroupContainer: {
     display: 'flex',  
@@ -348,4 +344,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   }
 });
- 

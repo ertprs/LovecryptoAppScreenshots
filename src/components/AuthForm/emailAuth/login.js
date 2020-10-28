@@ -10,7 +10,7 @@ import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 //Importações Internas
 import ErrorMessage from '../../errormenssage';
 import { loginApi }  from '../../../api/login';
-import { setUser } from '../../../store/actions/user';
+import { setUser, setUserPhoto } from '../../../store/actions/user';
 import { LoadingIndicator } from '../../../shared/loadingIcon';
 import { loginStart, loginFailure, loginSuccess, } from '../../../store/actions/auth';
 
@@ -26,9 +26,10 @@ const validationSchema = Yup.object().shape({
     .min(6, 'A senha deve ter pelo 6 caracteres ')
     .max(10, 'A senha deve ter no máximo 10 caracteres'),
 })
-
+ 
 //Componente para login/signup com email
 export const Login = (props) => {
+
   const dispatch = useDispatch();
 
   //Hide text do password
@@ -53,21 +54,29 @@ export const Login = (props) => {
   
   const login = async (email, password) => {
     dispatch(loginStart('EMAIL'))
+
     auth()
     .signInWithEmailAndPassword(email, password)
-    .then( ()=> {
-      loginApi().then( response => {
+    .then( async result => {
+      var user = result.user;
+      try{
+        const response = await loginApi()
+        const userAPI = response.data.user_data;
+        console.log('USER ' + JSON.stringify(userAPI))
         dispatch(loginSuccess())
-        dispatch(setUser(response))
-      })
+        dispatch(setUser(userAPI))
+        dispatch(setUserPhoto(auth().currentUser.photoURL))
+      }catch ( error ) {
+        console.log('Login api error: ' + error.message)
+        dispatch(loginFailure(error.message))
+        setHaveError(true)
+        setMessageError(error.message)
+      }
     })
     .catch(error => {
       dispatch(loginFailure(error.message))
-      setHaveError(true)
-      setMessageError(error.message)
     }); 
   };
-
 
   return (
     <Fragment>    

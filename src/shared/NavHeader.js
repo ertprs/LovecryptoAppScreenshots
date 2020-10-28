@@ -55,6 +55,7 @@ export const TopNavigationAccessoriesShowcase = (props) => {
   return (
     <Layout style={styles.container} level='1'>
       <TopNavigation
+      appearance = 'default' 
         alignment='center'
         title= {props.title}
         subtitle= {props.subtitle}

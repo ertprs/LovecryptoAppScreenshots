@@ -89,28 +89,30 @@ export const Signup = () => {
     .createUserWithEmailAndPassword(email, password)
     .then( res => {
       //Iniciando Signup Na API
-      registerApi(email, name, res.user.uid, authState.referedBy).then(()=> {
+      registerApi(email, name, res.user.uid, authState.referedBy).then(async()=> {
         dispatch(signUpSuccess())
         //Iniciando Login na API
         dispatch(loginStart('EMAIL'))
-
-        loginApi().then( response => {
+        auth().currentUser.sendEmailVerification()
+        try{
+          const response = await loginApi()
+          const userAPI = response.data.user_data;
           dispatch(loginSuccess())
-          dispatch(setUser(response))
-          return response;
-        }).catch(error => {
+          dispatch(setUser(user))
+          dispatch(setUserPhoto(auth().currentUser.photoURL))
+          auth().currentUser.sendEmailVerification()
+        }catch ( error ) {
+          console.log('Login api error: ' + error.message)
           dispatch(loginFailure(error.message))
-  
-        })
+          setHaveError(true)
+          setMessageError(error.message)
+        }
         //Final login API
       }).catch(error => {
         dispatch(signUpFailure(error.message))
         console.log('ERRO DE SIGNUP ' + error.message)
-        
       })
-
       //Final Signup na API
-  
     })
     .catch(error => {
       console.log(error.message);
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   input:{
-    marginBottom: 16,
+    marginTop: 16,
   },
   buttonRow:{
     backgroundColor: 'transparent',

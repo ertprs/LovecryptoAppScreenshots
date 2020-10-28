@@ -7,6 +7,8 @@ import {
     ADD_USER_POINTS,
     UPDATE_USER_ADDRESS,
     SET_USER_PHOTO,
+    SET_PHONE_VERIFIED,
+    SET_EMAIL_VERIFIED
   } from '../actions/';
   
   const initialState = {
@@ -19,6 +21,8 @@ import {
     recommendation_code: null,
     id: 0,
     photoUrl: null,
+    emailVerified: false,
+    phoneVerified: false,
   };
   
   export const userReducer = (state = initialState, action) => {
@@ -52,6 +56,16 @@ import {
           return {
             ...state,
             photoUrl: action.payload
+          };
+        case SET_EMAIL_VERIFIED:
+          return {
+            ...state,
+            emailVerified: true
+          };
+        case SET_PHONE_VERIFIED:
+          return {
+            ...state,
+            phoneVerified: true
           };
         case UPDATE_USER_CPF:
           return {

@@ -1,26 +1,21 @@
 import * as Yup from 'yup';
 import { Formik } from "formik";
-import React, { Fragment }  from "react";
+import React, { Fragment, useState }  from "react";
 import ErrorMessage from './errormenssage';
 import { StyleSheet } from "react-native";
-import { Button, Input, Layout, Text } from '@ui-kitten/components';
+import { Button, Input, Layout, Text, Icon, Modal, Card } from '@ui-kitten/components';
 import { useSelector, useDispatch } from 'react-redux';
 import { saveData } from '../memoryAccess/saveData'
 import { LoadingIndicator } from '../shared/loadingIcon'
+import { setFiatWallet } from '../store/actions/withdraw'
+ //Importações Internas
+import { generalStyle } from '../shared/generalStyle'
  
 //Regras de validação
 const validationSchema = Yup.object().shape({
-  account: Yup.string()
-    .label('agency')
-    .required('Este campo deve ser preenchido')
-    .min(4, 'O hash deve ter 10 dígitos')
-    .max(6, 'O hash deve ter 10 dígitos'),
-  agency: Yup.string()
-    .label('account')
-    .required('Este campo deve ser preenchido')
-    .min(4, 'O hash deve ter 10 dígitos')
-    .max(6, 'O hash deve ter 10 dígitos'),
- 
+  phone: Yup.string()
+  .matches('[0-9]{11}', 'Insira apenas os digitos com ddd, sem pontos, traços ou espaços'),
+  
 })
  
 //Componente para login/signup com email
@@ -28,29 +23,49 @@ export const AddAccountBank = (props) => {
 
   const dispatch = useDispatch();
   const wallet = useSelector(state => state.withdrawState);
- 
-  const saveBankAccount = async (agency, account) => {
-
-    const acc =  { name: 'Bank Account', code: null, type: 'fiat',  hash: null, agency: agency, account: account,}
-    
-    saveData('@bankAcount', acc) 
+  const [visible, setVisible] = useState(false);
+   
+  const Continue = () => {
+    setVisible(false)
+    props.navigation.navigate('Requestwithdraw', {type: 'fiat'})
   };
 
   return (
     <Layout style={{width: '100%'}}>
-      <Text style = {{marginBottom: 32, textAlign: 'center'}}>Insira os dados da sua conta bancaria</Text>
+      <Modal
+        visible={visible}
+        backdropStyle={generalStyle.backdrop}
+        onBackdropPress={() => setVisible(false)}>
+          <Card disabled={true}>
+              <Layout style = {{flex: 1, paddingTop: 8, justifyContent: 'center', alignItems: 'center'}}>
+              <Layout style = {{margin: 8, height: 50, width: 50, borderRadius: 25, backgroundColor: '#3366FF', justifyContent: 'center', alignItems: 'center'}}>
+                <Icon fill='white' style = {{height: 24, width: 24, alginSelf: 'right'}} name='phone-outline'/>
+              </Layout>
+              <Text  style = {{marginTop: 8}} category = 'h6'>{wallet.fiatWallet.phone}</Text>
+              <Text  style = {{marginTop: 8}} category = 'p1' appearance = 'hint'>O número está correto?</Text>
+              <Layout style = {{ display: 'flex', flexDirection: 'row', paddingTop: 16}}>
+                  <Button style = {{margin: 12}} status = 'basic' onPress={() => setVisible(false)}>
+                  Editar
+                  </Button>
+                  <Button style = {{margin: 12}} status = 'success' onPress={() => Continue()}>
+                  Confirmar
+                  </Button>
+              </Layout>
+              </Layout>          
+          </Card>
+        </Modal>
+      <Text style = {{marginBottom: 32, textAlign: 'center'}}>Insira um numero de telefone para receber a transferencia</Text>
+      <Text style = {{marginBottom: 32, textAlign: 'center'}}>Enviaremos um SMS com um link para saque</Text>
       <Formik
         initialValues={{
-          agency: '',
-          account: '',
+          phone: wallet.fiatWallet.phone,
         }}
         onSubmit={(values, {setSubmitting, resetForm}) => {
-          const { agency, account } = values;
-          saveBankAccount(agency, account).then( () => {
-            resetForm({agency: '', account: ''})
-            setSubmitting(false);
-            props.navigation.navigate('Requestwithdraw', {type: 'fiat'})
-          }) 
+          const { phone } = values;
+          setVisible(true)
+          dispatch(setFiatWallet(phone));
+          resetForm({phone: phone})
+          setSubmitting(false);
         }}
         validationSchema={validationSchema}>
         {({
@@ -65,25 +80,15 @@ export const AddAccountBank = (props) => {
         }) => (
           <Fragment>
             <Input
-              name='agency'
-              value={values.agency}
-              onChangeText={handleChange('agency')}
-              placeholder='Agencia'
-              onBlur={handleBlur('agency')}
+              name='phone'
+              value={values.phone}
+              onChangeText={handleChange('phone')}
+              placeholder='Telefone'
+              onBlur={handleBlur('phone')}
               size = 'large'
-              autoFocus
+           
             />
-            <ErrorMessage status = 'hint' errorValue={touched.agency && errors.agency} />
-            <Input
-              name='account'
-              value={values.account}
-              onChangeText={handleChange('account')}
-              placeholder='Conta'
-              onBlur={handleBlur('account')}
-              size = 'large'
-              autoFocus
-            />
-            <ErrorMessage status = 'hint' errorValue={touched.account && errors.account} />
+            <ErrorMessage status = 'hint' errorValue={touched.agency && errors.phone} />
             
             <Layout style = {{paddingTop: 64,}} >
               <Button 
@@ -91,7 +96,7 @@ export const AddAccountBank = (props) => {
                 status='success'
                 accessoryLeft={ isSubmitting ? LoadingIndicator : null}
                 disabled={ isSubmitting || !isValid }
-                >Cadastro</Button>
+                >Confirmar</Button>
             </Layout>
           </Fragment>
         )}

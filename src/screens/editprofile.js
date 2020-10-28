@@ -1,14 +1,25 @@
 //Importações Externas
-import React from 'react';
+import React, { Fragment } from 'react';
 import {ThemeContext} from '../../theme-context';
-import { SafeAreaView, ScrollView, StatusBar }  from 'react-native';
+import { SafeAreaView, Platform, StatusBar }  from 'react-native';
 import { Layout, useTheme } from '@ui-kitten/components';
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
 
 //Importações Internas
 import { generalStyle } from '../shared/generalStyle';
 import { TopNavigationHeader } from '../shared/topNavigation';
 import { EditProfilePhoto } from '../components/editProfilePhoto';
 import { EditProfileComponent } from '../components/editprofilecomponent';
+ 
+import { CustomHeader } from '../shared/customHeader';
+ 
+const renderContent = () => {
+  return(
+    <Layout style = { generalStyle.cardSection}>
+      <EditProfileComponent/>
+    </Layout>
+  )
+}
 
 export const EditProfileScreen = (props) => {
 
@@ -17,21 +28,28 @@ export const EditProfileScreen = (props) => {
   const theme = useTheme();
  
   return(
-    <SafeAreaView
-      style={{
-      flex: 1,
-      backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
-      }}>
-      <TopNavigationHeader navigation = {props.navigation} title = 'Editar Perfil'/>
-      <ScrollView>
-        <Layout style = {{width: '100%', height: 260, backgroundColor: theme['color-primary-default'], justifyContent: 'center', alignItems: 'center',}}/>
-        <Layout style = {{ top: -260, marginBottom: -260, backgroundColor: 'transparent', }}>
-          <EditProfilePhoto />
-          <Layout style = { generalStyle.cardSection}>
-            <EditProfileComponent/>
-          </Layout>
-        </Layout>
-      </ScrollView>
-    </SafeAreaView>
+    <Fragment>
+      { Platform.OS == 'ios' &&
+      <SafeAreaView style={{ flex: 0, backgroundColor: theme['color-primary-500']} }/>
+      }
+      <SafeAreaView
+        style={{
+        flex: 1,
+        backgroundColor: currentTheme === 'light' ? '#FFFFFF' : '#222B45',
+        }}>
+        
+        <ReactNativeParallaxHeader
+          headerMinHeight={56}
+          headerMaxHeight={250}
+          extraScrollHeight={50}
+          alwaysShowTitle={false}
+          navbarColor= {theme['color-primary-500']}
+          backgroundColor = {theme['color-primary-500']}
+          title = { <EditProfilePhoto />}
+          renderNavBar={ () =>  <CustomHeader navigation = {props.navigation} title = {'Editar Perfil'} subtitle = {'teddf'}/>}
+          renderContent={renderContent}
+        />
+      </SafeAreaView>
+    </Fragment>
   )
 };

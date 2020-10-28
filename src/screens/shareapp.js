@@ -5,17 +5,22 @@ import {
   Layout,
   Modal,
   Text,
+  useTheme,
 } from '@ui-kitten/components';
-import React from "react";
+import React, { Fragment } from "react";
 import { useSelector } from 'react-redux';
-import { SafeAreaView, StyleSheet, StatusBar } from "react-native";
+import { SafeAreaView, StyleSheet, Platform, StatusBar } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Clipboard, ImageBackground, Share, ToastAndroid } from 'react-native';
-
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
 //Importações Internas
 import {ThemeContext} from '../../theme-context';
 import { TopNavigationHeader } from '../shared/topNavigation'
+import { generalStyle } from '../shared/generalStyle';
+import { CustomHeader } from '../shared/customHeader';
  
+
+
 const onShare = async (codigo) => {
   try {
     await Share.share({
@@ -48,6 +53,74 @@ export const ShareApp = (props) => {
     );
     return null;
   };
+  const theme = useTheme(); 
+  const renderContent = () => {
+    return (
+      <>
+      <Modal
+        visible={visible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => setVisible(false)}>
+        <Card disabled={true} style = {{maxHeight: 600,}} header={Header}>
+          <ScrollView>
+            <Layout style = {{flex: 1, paddingTop: 8,   width: '70%'}}>
+              <Layout style = {styles.listItem}>
+                <Layout style = {{marginRight: 16, height: 30, width: 30, borderRadius: 25, backgroundColor: '#3366FF', justifyContent: 'center', alignItems: 'center'}}>
+                  <Text category = 'h6' status = 'control' >1</Text>
+                </Layout>
+                <Text style = {{marginTop: 4}}>Compartilhe seu código</Text>
+              </Layout>
+              <Layout style = {styles.listItem}>
+                <Layout style = {{marginRight: 16, height: 30, width: 30, borderRadius: 25, backgroundColor: '#3366FF', justifyContent: 'center', alignItems: 'center'}}>
+                  <Text category = 'h6' status = 'control' >2</Text>
+                </Layout>
+                <Text>Seu amigo adiciona o seu código no momento do cadastro no app</Text>
+              </Layout>
+              <Layout style = {styles.listItem}>
+                <Layout style = {{marginRight: 16, height: 30, width: 30, borderRadius: 25, backgroundColor: '#3366FF', justifyContent: 'center', alignItems: 'center'}}>
+                  <Text category = 'h6' status = 'control' >3</Text>
+                </Layout>
+                <Text>Ele e você recebem um bonus por usar o código de indicação</Text>
+              </Layout>
+              <Layout style = {styles.listItem}>
+                <Layout style = {{marginRight: 16, height: 30, width: 30, borderRadius: 25, backgroundColor: '#3366FF', justifyContent: 'center', alignItems: 'center'}}>
+                  <Text category = 'h6' status = 'control' >4</Text>
+                </Layout>
+                <Text>Indique quantos amigos quiser!</Text>
+              </Layout>
+            </Layout>  
+            <Text style = {{marginTop: 48}}>
+              Bonus por indicação:
+            </Text>
+            <Layout style = {{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 16}}>
+              <Text category = 's1'>Você</Text>
+              <Text category = 's1' status = 'success'>50 pontos</Text>
+            </Layout>
+            <Layout style = {{display: 'flex', flexDirection: 'row',justifyContent: 'space-between'}}>
+              <Text category = 's1'>Indicado</Text>
+              <Text category = 's1' status = 'success'>50 pontos</Text>
+            </Layout>
+            <Button status = 'success' style = {{margin: 4, marginTop: 48,}} onPress={()=> onShare()}>compartilhar</Button>
+          </ScrollView>        
+        </Card>
+      </Modal>
+        
+      <Layout style = {{backgroundColor: 'transparent', paddingTop: 24}}>
+        <Text  style = {{marginLeft: 16,}} status  = 'primary' category = 'h6'>Indique e ganhe</Text>
+        <Layout style = { styles.card}>
+          <Layout style = {{ width: '100%', backgroundColor: 'transparent', alignItems: 'center',    }}>
+            <Text style = {{textAlign: 'center'}}>Ganhe 10 Pontos E Seu Amigo Até 10 Pontos Ao Indicar O Lovecrypto</Text>
+            <Button style = {{borderRadius: 32, marginTop: 32, borderStyle: 'dashed'}} status = 'success'  appearance = 'outline'  onPress={() =>  CopyToClipboard()}>Seu código é : { state.userState.recommendation_code} </Button>
+            <Layout style={{marginTop: 32}}>
+              <Button status = 'success' style = {{margin: 4}} onPress={()=> onShare(state.userState.recommendation_code)}>compartilhar</Button>
+              <Button status = 'primary'  appearance = 'ghost' style = {{margin: 4}} onPress = {()=> setVisible(true)}>Saiba Mais</Button>
+            </Layout>
+          </Layout>
+        </Layout>
+          
+      </Layout>
+      </>
+    )}
 
   const Header = (props) => (
     <Layout {...props}>
@@ -56,13 +129,17 @@ export const ShareApp = (props) => {
   );
   
   return(
+    <Fragment>
+      { Platform.OS == 'ios' &&
+      <SafeAreaView style={{ flex: 0, backgroundColor: theme['color-primary-500']} }/>
+      }
     <SafeAreaView
       style={{
       flex: 1,
       backgroundColor: currentTheme === 'light' ? '#fff' : '#222B45',
       }}>
-      <TopNavigationHeader navigation = {props.navigation}  title = 'Compartilhe o app'/>
-      <ScrollView>
+      {/* <TopNavigationHeader navigation = {props.navigation}  title = 'Compartilhe o app'/> */}
+      {/* <ScrollView>
       <Modal
         visible={visible}
         backdropStyle={styles.backdrop}
@@ -122,7 +199,7 @@ export const ShareApp = (props) => {
                 <Button status = 'primary'  appearance = 'ghost' style = {{margin: 4}} onPress = {()=> setVisible(true)}>Saiba Mais</Button>
               </Layout>
             </Layout>
-          </Layout>
+          </Layout> */}
           {/* <Layout style = { styles.card}>
             <Layout style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Text category='label'>Você já ganhou</Text>
@@ -137,9 +214,19 @@ export const ShareApp = (props) => {
               <Text category='h5' style={{marginTop: 8}}>{ state.userState.points }</Text>
             </Layout>
           </Layout> */}
-        </Layout>
-        </ScrollView>
+        {/* </Layout>
+        </ScrollView> */}
+        <ReactNativeParallaxHeader
+          headerMinHeight={56}
+          headerMaxHeight={220}
+          extraScrollHeight={20}
+          navbarColor= {theme['color-primary-default']}
+          backgroundImage={require('../assets/images/share_bg.jpg')}
+          renderNavBar={() => <CustomHeader navigation = {props.navigation} title = {'Compartilhe o APP'} subtitle = {'teddf'}/>}
+          renderContent={renderContent}
+        />
     </SafeAreaView>
+    </Fragment>
   )
 };
    
